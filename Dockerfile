@@ -5,7 +5,7 @@ ENV http_proxy http://ffproxy.skyracing.cloud:3128
 ENV https_proxy http://ffproxy.skyracing.cloud:3128
 
 WORKDIR /app
-COPY package*.json .npmrc /app/
+COPY package*.json /app/
 RUN npm config set proxy http://ffproxy.skyracing.cloud:3128
 RUN npm config set https-proxy http://ffproxy.skyracing.cloud:3128
 RUN npm install
