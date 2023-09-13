@@ -7,6 +7,22 @@ const fs = require('fs');
 
 app.use(express.json());
 
+app.use(express.static('image')); // Serve files from the 'image'
+
+app.get('/download', (req, res) => {
+  // Generate a Blob (plain text file in this case)
+  const filePath = path.join(__dirname, 'image', 'qr-code.png')
+  const blob = new Blob([Image], { type: 'image/png' });
+
+  // Set response headers to trigger download
+  res.setHeader('Content-Disposition', 'attachment; filename="qr-code.png"');
+  res.setHeader('Content-Type', 'image/png');
+  res.setHeader('Content-Length', blob.size);
+
+  // Send the Blob as the response
+  res.send(blob);
+});
+
 app.post('/generate', (req, res) => {
   const { url } = req.body;
 
