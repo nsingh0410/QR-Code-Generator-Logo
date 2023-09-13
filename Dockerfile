@@ -8,7 +8,8 @@ WORKDIR /app
 COPY package*.json /app/
 RUN npm config set proxy http://ffproxy.skyracing.cloud:3128
 RUN npm config set https-proxy http://ffproxy.skyracing.cloud:3128
-RUN npm install
+RUN npm install -g npm@10.1.0
+#RUN npm install
 COPY app/ .
 RUN npm prune --production
 
