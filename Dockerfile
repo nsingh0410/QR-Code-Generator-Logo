@@ -10,7 +10,7 @@ RUN npm config set proxy http://ffproxy.skyracing.cloud:3128
 RUN npm config set https-proxy http://ffproxy.skyracing.cloud:3128
 RUN npm install -g npm@10.1.0
 #RUN npm install
-COPY app/ .
+COPY . .
 RUN npm prune --production
 
 FROM node:18-alpine as production
