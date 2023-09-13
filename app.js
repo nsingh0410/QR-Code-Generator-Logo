@@ -27,9 +27,15 @@ app.post('/generate', (req, res) => {
 
 app.post('/generate-file', async (req, res) => {
     const { url } = req.body;
+    let { filename } = req.body;
+
   
     if (!url) {
       return res.status(400).json({ error: 'URL is required.' });
+    }
+
+    if (!filename) {
+      filename = 'qr-code.png';
     }
   
     try {
@@ -37,7 +43,7 @@ app.post('/generate-file', async (req, res) => {
       const qrCodeBuffer = await QRCode.toBuffer(url, { errorCorrectionLevel: 'H' });
   
       // Specify the file path where you want to save the downloaded QR code image
-      const filePath = path.join(__dirname, 'image/qr-code.png');
+      const filePath = path.join(__dirname, 'image/' + filename);
   
       // Write the Buffer to a file
       fs.writeFileSync(filePath, qrCodeBuffer);
