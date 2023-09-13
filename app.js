@@ -24,12 +24,10 @@ app.post('/generate', (req, res) => {
   });
 });
 
-
 app.post('/generate-file', async (req, res) => {
     const { url } = req.body;
     let { filename } = req.body;
 
-  
     if (!url) {
       return res.status(400).json({ error: 'URL is required.' });
     }
@@ -59,6 +57,14 @@ app.post('/generate-file', async (req, res) => {
       res.status(500).json({ error: 'Failed to generate or send QR code.' });
     }
   });
+
+app.post('/generateqr/betfriends', async (req, res) => {
+  res.json({ url : '/generateqr/betfriends' });
+});
+
+app.post('/generateqr/meetinghub', async (req, res) => {
+  res.json({ url : '/generateqr/meetinghub' });
+});
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
