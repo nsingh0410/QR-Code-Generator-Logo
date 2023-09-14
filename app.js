@@ -1,13 +1,65 @@
 const express = require('express');
 const QRCode = require('qrcode');
 const app = express();
-const path = require('path');
 const port = 3000;
 const fs = require('fs');
 const QRCodeGenerator = require('./classes/qrcode-generator');
+const qr = require('qr-image');
+const swaggerJsdoc = require('swagger-jsdoc');
+const swaggerUi = require('swagger-ui-express');
+
 app.use(express.json());
 
+// Swagger options
+const swaggerOptions = {
+  definition: {
+    openapi: '3.0.0',
+    info: {
+      title: 'QR Code Generator API',
+      version: '1.0.0',
+      description: 'Generate QR codes with logos.',
+    },
+    servers: [
+      {
+        url: 'http://localhost:3000',
+        description: 'Local development server',
+      },
+      {
+        url: 'https://internal-digiapi.skyracing.cloud',
+        description: 'Prod development server',
+      }
+    ],
+  },
+  apis: ['app.js'], // Add your API file here
+};
 
+const swaggerSpec = swaggerJsdoc(swaggerOptions);
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+
+/**
+ * @swagger
+ * /generateqr/generate-base64:
+ *   post:
+ *     summary: Generate a QR code base64 enoce on text.
+ *     description: Generates a QR code containing the provided text.
+ *     requestBody:
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               text:
+ *                 type: string
+ *                 required: true
+ *                 description: The text to encode in the QR code.
+ *     responses:
+ *       200:
+ *         description: QR code base64 generated successfully.
+ *       400:
+ *         description: Bad request - missing URL.
+ *       500:
+ *         description: Internal server error.
+ */
 app.post('/generateqr/generate-base64', (req, res) => {
   const { text } = req.body;
 
@@ -25,6 +77,33 @@ app.post('/generateqr/generate-base64', (req, res) => {
   });
 });
 
+/**
+ * @swagger
+ * /generateqr/generate-file:
+ *   post:
+ *     summary: Generate a QR code based on text.
+ *     description: Generates a QR code containing the provided text.
+ *     requestBody:
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               text:
+ *                 type: string
+ *                 required: true
+ *                 description: The text to encode in the QR code.
+ *               size:
+ *                 type: integer
+ *                 description: The size of the QR code. Default is 512.
+ *     responses:
+ *       200:
+ *         description: QR code generated successfully.
+ *       400:
+ *         description: Bad request - missing URL.
+ *       500:
+ *         description: Internal server error.
+ */
 app.post('/generateqr/generate-file', async (req, res) => {
   const { text } = req.body;
   const options = {};
@@ -59,8 +138,50 @@ app.post('/generateqr/generate-file', async (req, res) => {
   });
 });
 
+/**
+ * @swagger
+ * /generateqr/betfriends:
+ *   post:
+ *     summary: Generate a QR code for betfriends.
+ *     description: Generates a QR code for meetinghub containing the post request input data.
+ *     requestBody:
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               date:
+ *                 type: string
+ *                 required: true
+ *                 description: The date of the race. e.g. 2023-09-14.
+ *               trackName:
+ *                 type: string
+ *                 required: true
+ *                 description: Name of the track. e.g. NORTHFIELD-PARK
+ *               bravoCode:
+ *                 type: string
+ *                 required: true
+ *                 description: The Bravo code. e.g. NFP
+ *               racingType:
+ *                 type: string
+ *                 required: true
+ *                 description: The Racing Type. e.g. H
+ *               racingNumber:
+ *                 type: string
+ *                 required: true
+ *                 description: The Racing Type. e.g. 1
+ *               size:
+ *                 type: integer
+ *                 description: The size of the QR code. Default is 512.  
+ *     responses:
+ *       200:
+ *         description: QR code generated successfully.
+ *       400:
+ *         description: Bad request - missing URL.
+ *       500:
+ *         description: Internal server error.
+ */
 app.post('/generateqr/betfriends', async (req, res) => {
-  //https://www.tab.com.au/racing/2023-09-13/SANDOWN/SAN/R/1
   let url = 'https://www.tab.com.au/racing/';
 
   let date = req.body.date;
@@ -131,6 +252,30 @@ app.post('/generateqr/betfriends', async (req, res) => {
   });// end imageByUrl
 });
 
+/**
+ * @swagger
+ * /generateqr/meetinghub:
+ *   post:
+ *     summary: Generate a QR code for meetinghub.
+ *     description: Generates a QR code for meetinghub containing the post request input data.
+ *     requestBody:
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               text:
+ *                 type: string
+ *                 required: true
+ *                 description: text for the meeting hub @TODO.
+ *     responses:
+ *       200:
+ *         description: QR code generated successfully.
+ *       400:
+ *         description: Bad request - missing URL.
+ *       500:
+ *         description: Internal server error.
+ */
 app.post('/generateqr/meetinghub', async (req, res) => {
   res.json({ url : '/generateqr/meetinghub' });
 });

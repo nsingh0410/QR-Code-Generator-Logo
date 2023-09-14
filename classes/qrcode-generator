@@ -10,12 +10,22 @@ class QRCodeGenerator {
       try {
 
         let filename = options.filename;
+        let size = 512;
 
         if (!filename) {
           filename = 'qr-code.png';
         }
+
+        if (options.size) {
+          size = options.size;
+        }
+        
         // Generate a QR code as a Buffer
-        const qrCodeBuffer = await QRCode.toBuffer(options.text, { errorCorrectionLevel: 'H' });
+        const qrCodeBuffer = await QRCode.toBuffer(options.text, { 
+          height: size, 
+          width: size, 
+          errorCorrectionLevel: 'H' 
+        });
     
         // Specify the file path where you want to save the downloaded QR code image
         const filePath = path.join(__dirname, filename);
