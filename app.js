@@ -4,34 +4,19 @@ const app = express();
 const path = require('path');
 const port = 3000;
 const fs = require('fs');
-
+const QRCodeGenerator = require('./classes/qrcode-generator');
 app.use(express.json());
 
-app.use(express.static('image')); // Serve files from the 'image'
 
-app.get('/download', (req, res) => {
-  // Generate a Blob (plain text file in this case)
-  const filePath = path.join(__dirname, 'image', 'qr-code.png')
-  const blob = new Blob([Image], { type: 'image/png' });
+app.post('/generateqr/generate-base64', (req, res) => {
+  const { text } = req.body;
 
-  // Set response headers to trigger download
-  res.setHeader('Content-Disposition', 'attachment; filename="qr-code.png"');
-  res.setHeader('Content-Type', 'image/png');
-  res.setHeader('Content-Length', blob.size);
-
-  // Send the Blob as the response
-  res.send(blob);
-});
-
-app.post('/generate', (req, res) => {
-  const { url } = req.body;
-
-  if (!url) {
-    return res.status(400).json({ error: 'URL is required.' });
+  if (!text) {
+    return res.status(400).json({ error: 'Text is required.' });
   }
 
   // Create a QR code for the URL
-  QRCode.toDataURL(url, (err, qrCodeURL) => {
+  QRCode.toDataURL(text, (err, qrCodeURL) => {
     if (err) {
       return res.status(500).json({ error: 'Failed to generate QR code.' });
     }
@@ -40,42 +25,110 @@ app.post('/generate', (req, res) => {
   });
 });
 
-app.post('/generate-file', async (req, res) => {
-    const { url } = req.body;
-    let { filename } = req.body;
+app.post('/generateqr/generate-file', async (req, res) => {
+  const { text } = req.body;
+  const options = {};
 
-    if (!url) {
-      return res.status(400).json({ error: 'URL is required.' });
+  options.text = text;
+
+  if (!text) {
+    return res.status(400).json({ error: 'Text is required.' });
+  }
+
+  const qrcodeGenerator = new QRCodeGenerator();
+ 
+  let result = await qrcodeGenerator.imageByUrl(options, (err, filePath) => {
+    if (err) {
+      return res.status(500).json({ error: 'Failed to generate QR code.' });
     }
 
-    if (!filename) {
-      filename = 'qr-code.png';
-    }
-  
-    try {
-      // Generate a QR code as a Buffer
-      const qrCodeBuffer = await QRCode.toBuffer(url, { errorCorrectionLevel: 'H' });
-  
-      // Specify the file path where you want to save the downloaded QR code image
-      const filePath = path.join(__dirname, 'image/' + filename);
-  
-      // Write the Buffer to a file
-      fs.writeFileSync(filePath, qrCodeBuffer);
-  
-      // Set response headers for downloading the image
-      res.setHeader('Content-Disposition', `attachment; filename="qr-code.png"`);
-      res.setHeader('Content-Type', 'image/png');
-  
-      // Send the QR code image file as a downloadable file
-      res.sendFile(filePath);
-    } catch (error) {
-      console.error('Error generating or sending QR code:', error);
-      res.status(500).json({ error: 'Failed to generate or send QR code.' });
-    }
+    // Set response headers for downloading the image
+    res.setHeader('Content-Disposition', `attachment; filename="qr-code.png"`);
+    res.setHeader('Content-Type', 'image/png');
+
+    // Send the QR code image file as a downloadable file
+    res.sendFile(filePath, (err) => {
+      if (err) {
+        console.error('Error sending file:', err);
+        res.status(500).json({ error: 'Failed to send QR code file.' });
+      }
+
+      // Delete the file after sending
+      fs.unlinkSync(filePath);
+    });
   });
+});
 
 app.post('/generateqr/betfriends', async (req, res) => {
-  res.json({ url : '/generateqr/betfriends' });
+  //https://www.tab.com.au/racing/2023-09-13/SANDOWN/SAN/R/1
+  let url = 'https://www.tab.com.au/racing/';
+
+  let date = req.body.date;
+  let trackName = req.body.trackName;
+  let bravoCode = req.body.bravoCode;
+  let racingType = req.body.racingType;
+  let racingNumber = req.body.racingNumber;
+  let filename = req.body.filename;
+  let options = {};
+
+  if (!filename) {
+    filename = "qr-code.png";
+  }
+
+  if (!date) {
+    return res.status(400).json({ error: 'Please enter date e.g. 2023-09-13' });
+  }
+
+  url = url + date;
+
+  if (!trackName) {
+    return res.status(400).json({ error: 'Please enter trackname e.g. SANDOWN' });
+  }
+
+  url = url + '/' + trackName;
+
+  if (!bravoCode) {
+    return res.status(400).json({ error: 'Please enter bravoCode e.g. SAN' });
+  }
+
+  url = url + '/' + bravoCode;
+
+  if (!racingType) {
+    return res.status(400).json({ error: 'Please enter racingType e.g. R' });
+  }
+
+  url = url + '/' + racingType;
+
+  if (!racingNumber) {
+    return res.status(400).json({ error: 'Please enter racingNumber e.g. 1' });
+  }
+
+  url = url + '/' + racingNumber;
+
+  options.text = url;
+
+  const qrcodeGenerator = new QRCodeGenerator();
+ 
+  let result = await qrcodeGenerator.imageByUrl(options, (err, filePath) => {
+    if (err) {
+      return res.status(500).json({ error: 'Failed to generate QR code.' });
+    }
+
+    // Set response headers for downloading the image
+    res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
+    res.setHeader('Content-Type', 'image/png');
+
+    // Send the QR code image file as a downloadable file
+    res.sendFile(filePath, (err) => {
+      if (err) {
+        console.error('Error sending file:', err);
+        res.status(500).json({ error: 'Failed to send QR code file.' });
+      }
+
+      // Delete the file after sending
+      fs.unlinkSync(filePath);
+    });
+  });// end imageByUrl
 });
 
 app.post('/generateqr/meetinghub', async (req, res) => {
