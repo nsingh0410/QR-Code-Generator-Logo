@@ -5,8 +5,11 @@ const port = 3000;
 const fs = require('fs');
 const QRCodeGenerator = require('./classes/qrcode-generator');
 const qr = require('qr-image');
+const path = require('path');
 const swaggerJsdoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
+const generateQRCodeWithLogo = require('./js/generate-qr-with-logo');
+
 
 app.use(express.json());
 
@@ -52,6 +55,7 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
  *                 type: string
  *                 required: true
  *                 description: The text to encode in the QR code.
+ *                 default: https://www.skyracing.com.au
  *     responses:
  *       200:
  *         description: QR code base64 generated successfully.
@@ -93,9 +97,11 @@ app.post('/generateqr/generate-base64', (req, res) => {
  *                 type: string
  *                 required: true
  *                 description: The text to encode in the QR code.
+ *                 default: https://www.skyracing.com.au
  *               size:
  *                 type: integer
  *                 description: The size of the QR code. Default is 512.
+ *                 default: 512
  *     responses:
  *       200:
  *         description: QR code generated successfully.
@@ -143,7 +149,7 @@ app.post('/generateqr/generate-file', async (req, res) => {
  * /generateqr/betfriends:
  *   post:
  *     summary: Generate a QR code for betfriends.
- *     description: Generates a QR code for meetinghub containing the post request input data.
+ *     description: Generates a QR code for betfriends containing the post request input data.
  *     requestBody:
  *       content:
  *         application/json:
@@ -154,25 +160,31 @@ app.post('/generateqr/generate-file', async (req, res) => {
  *                 type: string
  *                 required: true
  *                 description: The date of the race. e.g. 2023-09-14.
+ *                 default: 2023-09-14
  *               trackName:
  *                 type: string
  *                 required: true
  *                 description: Name of the track. e.g. NORTHFIELD-PARK
+ *                 default: NORTHFIELD-PARK
  *               bravoCode:
  *                 type: string
  *                 required: true
  *                 description: The Bravo code. e.g. NFP
+ *                 default: NFP
  *               racingType:
  *                 type: string
  *                 required: true
  *                 description: The Racing Type. e.g. H
+ *                 default: H
  *               racingNumber:
  *                 type: string
  *                 required: true
  *                 description: The Racing Type. e.g. 1
+ *                 default: 1
  *               size:
  *                 type: integer
- *                 description: The size of the QR code. Default is 512.  
+ *                 description: The size of the QR code. Default is 512.
+ *                 default: 512  
  *     responses:
  *       200:
  *         description: QR code generated successfully.
@@ -268,6 +280,7 @@ app.post('/generateqr/betfriends', async (req, res) => {
  *                 type: string
  *                 required: true
  *                 description: text for the meeting hub @TODO.
+ *                 default: https://www.skyracing.com.au
  *     responses:
  *       200:
  *         description: QR code generated successfully.
@@ -278,6 +291,77 @@ app.post('/generateqr/betfriends', async (req, res) => {
  */
 app.post('/generateqr/meetinghub', async (req, res) => {
   res.json({ url : '/generateqr/meetinghub' });
+});
+
+/**
+ * @swagger
+ * /generateqr/generate-file-fancy:
+ *   post:
+ *     summary: Generate a QR code with a logo and download it.
+ *     description: Generate a QR code with a logo, customize its appearance, and download it as an image file.
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               text:
+ *                 type: string
+ *                 required: true
+ *                 description: The text or URL to encode in the QR code.
+ *                 default: https://www.skyracing.com.au
+ *               logoImagePath:
+ *                 type: string
+ *                 description: The path to the logo image (optional, uses default if not provided).
+ *                 default: images/tab-logo.png
+ *               qrSize:
+ *                 type: integer
+ *                 description: The size of the QR code (optional, default is 200).
+ *               logoSize:
+ *                 type: integer
+ *                 description: The size of the logo on the QR code (optional, default is 50).
+ *               outputFilePath:
+ *                 type: string
+ *                 description: The name of the output file (optional, default is 'qrcode-with-logo.png').
+ *                 default: 'qrcode-with-logo.png'
+ *     responses:
+ *       200:
+ *         description: Successfully generated and downloaded the QR code with a logo.
+ *       400:
+ *         description: Bad request. The 'text' parameter is required.
+ *       500:
+ *         description: Internal server error. Failed to generate or download the QR code with a logo.
+ */
+app.post('/generateqr/generate-file-fancy', async (req, res) => {
+  const { text, logoImagePath = 'images/tab-logo.png', qrSize = 512, logoSize = 50, outputFilePath = 'qrcode-with-logo.png' } = req.body;
+
+  if (!text) {
+    return res.status(400).json({ error: 'Text is required.' });
+  }
+  
+  try {
+    // Generate the QR code with logo and download it
+    const filePath = await generateQRCodeWithLogo(text, logoImagePath, qrSize, logoSize, outputFilePath);
+
+    // Construct an absolute file path using path.join
+    const absoluteFilePath = path.join(__dirname, filePath);
+
+    // Set response headers for downloading the image
+    res.setHeader('Content-Disposition', `attachment; filename="${outputFilePath}"`);
+    res.setHeader('Content-Type', 'image/png');
+
+    // Send the QR code image file as a downloadable file
+    const fileStream = fs.createReadStream(absoluteFilePath);
+    fileStream.pipe(res);
+    fileStream.on('end', () => {
+      // Delete the file after sending
+      fs.unlinkSync(absoluteFilePath);
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Failed to generate and download QR code with logo.' });
+  }
 });
 
 app.listen(port, () => {
