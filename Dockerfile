@@ -9,23 +9,22 @@ COPY package*.json /app/
 RUN npm config set proxy http://ffproxy.skyracing.cloud:3128
 RUN npm config set https-proxy http://ffproxy.skyracing.cloud:3128
 
+ENV NODE_DIR /var/www
+
 # Add canvas dependencies.
-RUN apk add  --update --no-cache \
-        build-base \
-        autoconf \
-        bash \
-        python \
-        krb5-dev \
-        imagemagick \
-        libjpeg \
-        cairo-dev \
-        imagemagick \
-        icu-dev \
-        jpeg-dev \
-        libpng-dev \
-        pango-dev \
-        giflib-dev \
-        gd-dev
+# .npm-deps https://github.com/Automattic/node-canvas/issues/866
+RUN apk add --no-cache --virtual .health-check curl \
+	&& apk add --no-cache --virtual .build-deps git build-base g++ \
+	&& apk add --no-cache --virtual .npm-deps cairo-dev libjpeg-turbo-dev pango
+
+# cache npm
+COPY src/package.json /tmp/
+RUN cd /tmp \
+	&& npm install \
+	&& apk del .build-deps
+
+COPY src $NODE_DIR
+RUN cp -a /tmp/node_modules $NODE_DIR/
 
 #RUN npm install
 RUN npm install -g npm@10.1.0
