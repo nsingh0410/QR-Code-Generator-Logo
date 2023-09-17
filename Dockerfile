@@ -27,7 +27,7 @@ RUN apk add --update --no-cache \
     autoconf \
     automake
 
-RUN npm install 
+RUN npm install -g npm@10.1.0
 
 COPY . .
 RUN npm prune --production
