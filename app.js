@@ -1,4 +1,4 @@
-const express = require('express');
+ const express = require('express');
 const QRCode = require('qrcode');
 const app = express();
 const port = 3000;
@@ -8,7 +8,9 @@ const qr = require('qr-image');
 const path = require('path');
 const swaggerJsdoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
-const generateQRCodeWithLogo = require('./js/generate-qr-with-logo');
+const generateQRCode = require('./js/generate-qrcode');
+const QRCodeEntity = require('./entity/Qrcode.js');
+const Utils = require('./js/utils');
 
 
 app.use(express.json());
@@ -78,69 +80,6 @@ app.post('/generateqr/generate-base64', (req, res) => {
     }
 
     res.json({ qrCodeURL });
-  });
-});
-
-/**
- * @swagger
- * /generateqr/generate-file:
- *   post:
- *     summary: Generate a QR code based on text.
- *     description: Generates a QR code containing the provided text.
- *     requestBody:
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               text:
- *                 type: string
- *                 required: true
- *                 description: The text to encode in the QR code.
- *                 default: https://www.skyracing.com.au
- *               size:
- *                 type: integer
- *                 description: The size of the QR code. Default is 512.
- *                 default: 512
- *     responses:
- *       200:
- *         description: QR code generated successfully.
- *       400:
- *         description: Bad request - missing URL.
- *       500:
- *         description: Internal server error.
- */
-app.post('/generateqr/generate-file', async (req, res) => {
-  const { text } = req.body;
-  const options = {};
-
-  options.text = text;
-
-  if (!text) {
-    return res.status(400).json({ error: 'Text is required.' });
-  }
-
-  const qrcodeGenerator = new QRCodeGenerator();
- 
-  let result = await qrcodeGenerator.imageByUrl(options, (err, filePath) => {
-    if (err) {
-      return res.status(500).json({ error: 'Failed to generate QR code.' });
-    }
-
-    // Set response headers for downloading the image
-    res.setHeader('Content-Disposition', `attachment; filename="qr-code.png"`);
-    res.setHeader('Content-Type', 'image/png');
-
-    // Send the QR code image file as a downloadable file
-    res.sendFile(filePath, (err) => {
-      if (err) {
-        console.error('Error sending file:', err);
-        res.status(500).json({ error: 'Failed to send QR code file.' });
-      }
-
-      // Delete the file after sending
-      fs.unlinkSync(filePath);
-    });
   });
 });
 
@@ -295,7 +234,7 @@ app.post('/generateqr/meetinghub', async (req, res) => {
 
 /**
  * @swagger
- * /generateqr/generate-file-fancy:
+ * /generateqr/generate-file-logo:
  *   post:
  *     summary: Generate a QR code with a logo and download it.
  *     description: Generate a QR code with a logo, customize its appearance, and download it as an image file.
@@ -313,15 +252,15 @@ app.post('/generateqr/meetinghub', async (req, res) => {
  *                 default: https://www.skyracing.com.au
  *               logoImagePath:
  *                 type: string
- *                 description: The path to the logo image (optional, uses default if not provided).
- *                 default: images/tab-logo.png
+ *                 description: The path to the logo image (optional, if provided will add logo in centre).
+ *                 default: images/tab-logo-white.png
  *               qrSize:
  *                 type: integer
- *                 description: The size of the QR code (optional, default is 200).
+ *                 description: The size of the QR code (optional, default is 512).
  *               logoSize:
  *                 type: integer
- *                 description: The size of the logo on the QR code (optional, default is 50).
- *               outputFilePath:
+ *                 description: The size of the logo on the QR code (optional, default is 150).
+ *               outputFileName:
  *                 type: string
  *                 description: The name of the output file (optional, default is 'qrcode-with-logo.png').
  *                 default: 'qrcode-with-logo.png'
@@ -333,22 +272,45 @@ app.post('/generateqr/meetinghub', async (req, res) => {
  *       500:
  *         description: Internal server error. Failed to generate or download the QR code with a logo.
  */
-app.post('/generateqr/generate-file-fancy', async (req, res) => {
-  const { text, logoImagePath = 'images/tab-logo.png', qrSize = 512, logoSize = 50, outputFilePath = 'qrcode-with-logo.png' } = req.body;
+app.post('/generateqr/generate-file-logo', async (req, res) => {
+  const {
+    text,
+    logoImagePath,
+    qrSize,
+    logoSize,
+    outputFileName
+  } = new QRCodeEntity(
+    req.body.text,
+    req.body.logoImagePath,
+    req.body.qrSize,
+    req.body.logoSize,
+    req.body.outputFileName
+  );
 
   if (!text) {
     return res.status(400).json({ error: 'Text is required.' });
   }
   
   try {
-    // Generate the QR code with logo and download it
-    const filePath = await generateQRCodeWithLogo(text, logoImagePath, qrSize, logoSize, outputFilePath);
+    // If outputDirectory is not provided, set it to the current working directory
+    const filePath = await generateQRCode({
+      text,
+      logoImagePath,
+      qrSize,
+      logoSize,
+      outputFileName
+    });
 
     // Construct an absolute file path using path.join
-    const absoluteFilePath = path.join(__dirname, filePath);
+    const absoluteFilePath = path.join(filePath); // Updated path
+
+    // Check if the file exists before attempting to read it
+    if (!fs.existsSync(absoluteFilePath)) {
+      return res.status(404).json({ error: 'File not found.' });
+    }
 
     // Set response headers for downloading the image
-    res.setHeader('Content-Disposition', `attachment; filename="${outputFilePath}"`);
+    res.setHeader('Content-Disposition', `attachment; filename="${outputFileName}"`);
     res.setHeader('Content-Type', 'image/png');
 
     // Send the QR code image file as a downloadable file
