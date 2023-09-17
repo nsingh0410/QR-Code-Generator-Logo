@@ -19,9 +19,6 @@ RUN apk add --no-cache --virtual .health-check curl \
 
 # cache npm
 COPY package.json .
-RUN cd /tmp \
-	&& npm install \
-	&& apk del .build-deps
 
 COPY src $NODE_DIR
 RUN cp -a /tmp/node_modules $NODE_DIR/
