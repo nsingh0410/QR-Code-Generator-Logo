@@ -12,13 +12,13 @@ RUN npm config set https-proxy http://ffproxy.skyracing.cloud:3128
 ENV NODE_DIR /var/www
 
 # Add canvas dependencies.
-# .npm-deps https://github.com/Automattic/node-canvas/issues/866
-RUN apk add --no-cache --virtual .health-check curl \
-	&& apk add --no-cache --virtual .build-deps git build-base g++ \
-	&& apk add --no-cache --virtual .npm-deps cairo-dev libjpeg-turbo-dev pango
+
 
 #RUN npm install
-RUN npm install -g npm@8.19.4
+RUN RUN apk add --no-cache --virtual .build-deps python make g++ \ npm install -g npm@8.19.4
+
+# Install canvas package
+RUN npm install canvas
 
 COPY . .
 RUN npm prune --production
