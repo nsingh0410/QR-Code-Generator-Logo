@@ -266,6 +266,10 @@ app.post('/generateqr/meetinghub', async (req, res) => {
  *                 type: string
  *                 description: The name of the output file (optional, default is 'qrcode-with-logo.png').
  *                 default: 'qrcode-with-logo.png'
+ *               outputDirectory:
+ *                 type: string
+ *                 description: The name of the output directory (optional, default is 'C:\images\').
+ *                 default: 'C:\images\'
  *     responses:
  *       200:
  *         description: Successfully generated and downloaded the QR code with a logo.
@@ -275,7 +279,7 @@ app.post('/generateqr/meetinghub', async (req, res) => {
  *         description: Internal server error. Failed to generate or download the QR code with a logo.
  */
 app.post('/generateqr/generate-file-logo', async (req, res) => {
-  const {
+  const qrCodeEntity = {
     text,
     logoImagePath,
     qrSize,
@@ -297,33 +301,13 @@ app.post('/generateqr/generate-file-logo', async (req, res) => {
   
   try {
     // If outputDirectory is not provided, set it to the current working directory
-    const filePath = await generateQRCode({
-      text,
-      logoImagePath,
-      qrSize,
-      logoSize,
-      outputFileName,
-      outputDirectory,
-    });
+    const filePath = await generateQRCode(qrCodeEntity);
 
     // Construct an absolute file path using path.join
     const absoluteFilePath = path.join(outputDirectory || process.cwd(), filePath);
 
-    // Set response headers for downloading the image
-    //res.setHeader('Content-Disposition', `attachment; filename="${outputFileName}"`);
-   // res.setHeader('Content-Type', 'image/png');
-
-   fs.writeFile(absoluteFilePath, filePath, 'binary', function(err) {
     res.status(200).json({ success: 'Saved Image to: ' + absoluteFilePath });
-  });
 
-    // Send the QR code image file as a downloadable file
-    // res.sendFile(absoluteFilePath, (err) => {
-    //   if (err) {
-    //     console.error('Error sending file:', err);
-    //     res.status(500).json({ error: 'Failed to send QR code file.' });
-    //   }
-    // });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Failed to generate and download QR code with logo.' });

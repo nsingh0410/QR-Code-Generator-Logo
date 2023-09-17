@@ -6,8 +6,8 @@ const path = require('path');
 const generateQRCode = async (qrCodeEntity) => {
   try {
     // Destructure properties from the QRCodeEntity instance
-    const { text, logoImagePath, qrSize, logoSize, outputFileName } = qrCodeEntity;
-
+    const { text, logoImagePath, qrSize, logoSize, outputFileName, outputDirectory } = qrCodeEntity;
+    
     // Generate the QR code
     const qrCode = await qrcode.toDataURL(text, { errorCorrectionLevel: 'H', width: qrSize });
 
@@ -35,7 +35,12 @@ const generateQRCode = async (qrCodeEntity) => {
 
     // Save the canvas as an image file
     const stream = canvas.createPNGStream();
-    const fileStream = fs.createWriteStream(outputFileName);
+    //const fileStream = fs.createWriteStream(outputFileName);
+    let fileStream = fs.createWriteStream(`${outputFileName}`);
+    if (outputDirectory) {
+      console.log(`${outputDirectory}${outputFileName}`);
+       fileStream = fs.createWriteStream(`${outputDirectory}${outputFileName}`);
+    }
 
     return new Promise((resolve, reject) => {
       stream.pipe(fileStream);
