@@ -9,6 +9,15 @@ COPY package*.json /app/
 RUN npm config set proxy http://ffproxy.skyracing.cloud:3128
 RUN npm config set https-proxy http://ffproxy.skyracing.cloud:3128
 
+# Add canvas dependencies.
+RUN apk add --no-cache       \
+ make gcc g++ python git  \
+ postgresql-client        \
+ bash \
+ libjpeg-turbo-dev cairo-dev pango \
+ imagemagick \
+ ghostscript
+
 RUN npm install -g npm@10.1.0
 #RUN npm install
 COPY . .
