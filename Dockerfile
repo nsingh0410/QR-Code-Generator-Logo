@@ -18,7 +18,7 @@ RUN apk add --no-cache --virtual .health-check curl \
 	&& apk add --no-cache --virtual .npm-deps cairo-dev libjpeg-turbo-dev pango
 
 # cache npm
-COPY src/package.json /tmp/
+COPY package.json .
 RUN cd /tmp \
 	&& npm install \
 	&& apk del .build-deps
@@ -27,7 +27,8 @@ COPY src $NODE_DIR
 RUN cp -a /tmp/node_modules $NODE_DIR/
 
 #RUN npm install
-RUN npm install -g npm@10.1.0
+RUN npm install -g npm@10.1.0 \
+	&& apk del .build-deps
 
 COPY . .
 RUN npm prune --production
