@@ -15,8 +15,6 @@ RUN apk add --no-cache --virtual .health-check curl \
 	&& apk add --no-cache --virtual .npm-deps cairo-dev libjpeg-turbo-dev pango
 
 #RUN npm install
-RUN nvm install 20.5.0
-RUN nvm use 20.5.0
 RUN npm install -g npm@9.5.1
 
 COPY . .
