@@ -9,11 +9,6 @@ COPY package*.json /app/
 RUN npm config set proxy http://ffproxy.skyracing.cloud:3128
 RUN npm config set https-proxy http://ffproxy.skyracing.cloud:3128
 
-# Clear NPM Cache
-RUN npm cache clean --force
-RUN npm cache verify
-RUN apt-get install build-essential libcairo2-dev libpango1.0-dev libjpeg-dev libgif-dev librsvg2-dev
-
 RUN npm install -g npm@10.1.0
 #RUN npm install
 COPY . .
