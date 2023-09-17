@@ -17,10 +17,8 @@ RUN apk add --no-cache --virtual .health-check curl \
 	&& apk add --no-cache --virtual .build-deps git build-base g++ \
 	&& apk add --no-cache --virtual .npm-deps cairo-dev libjpeg-turbo-dev pango
 
-# cache npm
-
 #RUN npm install
-RUN npm install -g npm@latest
+RUN npm install -g npm@8.19.4
 
 COPY . .
 RUN npm prune --production
