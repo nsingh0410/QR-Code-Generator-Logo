@@ -20,8 +20,7 @@ RUN apk add --no-cache --virtual .health-check curl \
 # cache npm
 
 #RUN npm install
-RUN npm install -g npm@10.1.0 \
-	&& apk del .build-deps
+RUN npm install -g npm@latest
 
 COPY . .
 RUN npm prune --production
