@@ -1,4 +1,4 @@
-FROM node:16-alpine as builder
+FROM node:18-alpine as builder
 ARG NODE_ENV="development"
 ENV NODE_ENV=${NODE_ENV}
 ENV http_proxy http://ffproxy.skyracing.cloud:3128
@@ -16,7 +16,7 @@ ENV NODE_DIR /var/www
 
 #RUN npm install
 RUN apk add --no-cache --virtual .build-deps python3 make g++ \
-    && npm install -g npm@10.1.0 \
+    && RUN npm install -g npm@8.19.4 \
     && npm install canvas \
     && apk del .build-deps
 
