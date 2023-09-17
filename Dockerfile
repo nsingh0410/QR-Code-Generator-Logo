@@ -1,4 +1,4 @@
-FROM node:lts-alpine as builder
+FROM node:18-alpine as builder
 ARG NODE_ENV="development"
 ENV NODE_ENV=${NODE_ENV}
 ENV http_proxy http://ffproxy.skyracing.cloud:3128
@@ -20,7 +20,7 @@ RUN npm install -g npm@10.1.0
 COPY . .
 RUN npm prune --production
 
-FROM node:lts-alpine as production
+FROM node:18-alpine as production
 USER node:node
 ARG NODE_ENV="production"
 ENV NODE_ENV=${NODE_ENV}
