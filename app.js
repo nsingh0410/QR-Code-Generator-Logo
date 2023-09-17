@@ -24,15 +24,16 @@ const swaggerOptions = {
       version: '1.0.0',
       description: 'Generate QR codes with logos.',
     },
-    servers: [
-      {
-        url: 'http://localhost:3000',
-        description: 'Local development server',
-      },
+    servers: [ 
       {
         url: 'https://internal-digiapi.skyracing.cloud',
         description: 'Prod development server',
+      },
+      {
+        url: 'http://localhost:3000',
+        description: 'Local development server',
       }
+      
     ],
   },
   apis: ['app.js'], // Add your API file here
