@@ -14,8 +14,11 @@ RUN apk add --no-cache --virtual .health-check curl \
 	&& apk add --no-cache --virtual .build-deps git build-base g++ \
 	&& apk add --no-cache --virtual .npm-deps cairo-dev libjpeg-turbo-dev pango
 
-RUN npm install -g npm@10.1.0
 #RUN npm install
+RUN nvm install 20.5.0
+RUN nvm use 20.5.0
+RUN npm install -g npm@9.5.1
+
 COPY . .
 RUN npm prune --production
 
