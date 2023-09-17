@@ -6,6 +6,7 @@ class QRCodeEntity {
       this.qrSize = qrSize;
       this.logoSize = logoSize;
       this.outputFileName = outputFileName;
+      this.outputDirectory = outputDirectory;
     }
 }
 

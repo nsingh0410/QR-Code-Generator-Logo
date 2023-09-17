@@ -257,9 +257,11 @@ app.post('/generateqr/meetinghub', async (req, res) => {
  *               qrSize:
  *                 type: integer
  *                 description: The size of the QR code (optional, default is 512).
+ *                 default: 512
  *               logoSize:
  *                 type: integer
  *                 description: The size of the logo on the QR code (optional, default is 150).
+ *                 default: 150
  *               outputFileName:
  *                 type: string
  *                 description: The name of the output file (optional, default is 'qrcode-with-logo.png').
@@ -278,13 +280,15 @@ app.post('/generateqr/generate-file-logo', async (req, res) => {
     logoImagePath,
     qrSize,
     logoSize,
-    outputFileName
+    outputFileName,
+    outputDirectory
   } = new QRCodeEntity(
     req.body.text,
     req.body.logoImagePath,
     req.body.qrSize,
     req.body.logoSize,
-    req.body.outputFileName
+    req.body.outputFileName,
+    req.body.outputDirectory
   );
 
   if (!text) {
@@ -298,33 +302,34 @@ app.post('/generateqr/generate-file-logo', async (req, res) => {
       logoImagePath,
       qrSize,
       logoSize,
-      outputFileName
+      outputFileName,
+      outputDirectory,
     });
 
     // Construct an absolute file path using path.join
-    const absoluteFilePath = path.join(filePath); // Updated path
-
-    // Check if the file exists before attempting to read it
-    if (!fs.existsSync(absoluteFilePath)) {
-      return res.status(404).json({ error: 'File not found.' });
-    }
+    const absoluteFilePath = path.join(outputDirectory || process.cwd(), filePath);
 
     // Set response headers for downloading the image
-    res.setHeader('Content-Disposition', `attachment; filename="${outputFileName}"`);
-    res.setHeader('Content-Type', 'image/png');
+    //res.setHeader('Content-Disposition', `attachment; filename="${outputFileName}"`);
+   // res.setHeader('Content-Type', 'image/png');
+
+   fs.writeFile(absoluteFilePath, filePath, 'binary', function(err) {
+    res.status(200).json({ success: 'Saved Image to: ' + absoluteFilePath });
+  });
 
     // Send the QR code image file as a downloadable file
-    const fileStream = fs.createReadStream(absoluteFilePath);
-    fileStream.pipe(res);
-    fileStream.on('end', () => {
-      // Delete the file after sending
-      fs.unlinkSync(absoluteFilePath);
-    });
+    // res.sendFile(absoluteFilePath, (err) => {
+    //   if (err) {
+    //     console.error('Error sending file:', err);
+    //     res.status(500).json({ error: 'Failed to send QR code file.' });
+    //   }
+    // });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Failed to generate and download QR code with logo.' });
   }
 });
+
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
