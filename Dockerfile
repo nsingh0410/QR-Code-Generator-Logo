@@ -15,7 +15,8 @@ ENV NODE_DIR /var/www
 
 
 #RUN npm install
-RUN apk add --no-cache --virtual .build-deps python make g++ \ npm install -g npm@8.19.4
+RUN apk add --no-cache --virtual .build-deps python3 make gpp \
+     && npm install -g npm@8.19.4
 
 # Install canvas package
 RUN npm install canvas
