@@ -15,10 +15,19 @@ ENV NODE_DIR /var/www
 
 
 #RUN npm install
-RUN apk add --no-cache --virtual .build-deps python3 make g++ \
-    && npm install -g npm@8.19.4 \
-    && npm install canvas \
-    && apk del .build-deps
+
+RUN apk add --update --no-cache \
+    make \
+    g++ \
+    jpeg-dev \
+    cairo-dev \
+    giflib-dev \
+    pango-dev \
+    libtool \
+    autoconf \
+    automake
+
+RUN npm install 
 
 COPY . .
 RUN npm prune --production
