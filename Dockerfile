@@ -10,9 +10,7 @@ RUN npm config set proxy http://ffproxy.skyracing.cloud:3128
 RUN npm config set https-proxy http://ffproxy.skyracing.cloud:3128
 
 # Add canvas dependencies.
-RUN apk add --no-cache --virtual .health-check curl \
-	&& apk add --no-cache --virtual .build-deps git build-base g++ \
-	&& apk add --no-cache --virtual .npm-deps cairo-dev libjpeg-turbo-dev pango
+RUN apk --no-cache add build-base g++ cairo-dev jpeg-dev pango-dev giflib-dev
 
 #RUN npm install
 RUN npm install -g npm@10.1.0
