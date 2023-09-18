@@ -28,7 +28,7 @@ RUN apk add --no-cache \
     pango-dev \
     cairo-dev \
     giflib-dev \
-    python \
+    python3 \
     ;
 
 #  add glibc and install canvas
