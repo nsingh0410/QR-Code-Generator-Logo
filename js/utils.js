@@ -9,7 +9,7 @@ class Utils {
       let filename = url.replace(/https?:\/\//i, '');
   
       // Replace special characters with underscores
-      filename = filename.replace(this.invalidChars, '_');
+      filename = filename.replace(this.invalidChars, '-');
   
       // Trim any trailing dots or underscores
       filename = filename.replace(/[._]+$/, '');

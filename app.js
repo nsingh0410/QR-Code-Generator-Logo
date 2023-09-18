@@ -1,17 +1,11 @@
  const express = require('express');
-const QRCode = require('qrcode');
 const app = express();
 const port = 3000;
-const fs = require('fs');
-const QRCodeGenerator = require('./classes/qrcode-generator');
-const qr = require('qr-image');
-const path = require('path');
 const swaggerJsdoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
 const generateQRCode = require('./js/generate-qrcode');
 const QRCodeEntity = require('./entity/Qrcode.js');
 const Utils = require('./js/utils');
-
 
 app.use(express.json());
 
@@ -109,6 +103,9 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
  */
 app.post('/generateqr/betfriends', async (req, res) => {
   let url = 'https://www.tab.com.au/racing/';
+  let baseurl = url;
+  // Create an instance of the Utils class
+  const utils = new Utils();
 
   const qrCodeEntity = {
     text,
@@ -131,7 +128,6 @@ app.post('/generateqr/betfriends', async (req, res) => {
   let bravoCode = req.body.bravoCode;
   let racingType = req.body.racingType;
   let racingNumber = req.body.racingNumber;
-  let options = {};
 
   if (!date) {
     return res.status(400).json({ error: 'Please enter date e.g. 2023-09-13' });
@@ -163,10 +159,19 @@ app.post('/generateqr/betfriends', async (req, res) => {
 
   url = url + '/' + racingNumber;
 
+  if (!req.body.outputFileName) {
+    // strip the base domain from the filename.
+    let filename = url.replace(baseurl, '');
+    // Use the Utils class to generate a valid filename based on the text (URL)
+    qrCodeEntity.outputFileName = utils.convert(filename) + '.png';
+  }
+  
+  // Create the url link.
   qrCodeEntity.text = url;
 
-    // Call the reusable method to generate and send the QR code
-    generateAndSendQRCode(qrCodeEntity, res);
+  // res.json({ url :  qrCodeEntity.outputFileName });
+  // Call the reusable method to generate and send the QR code
+  generateAndSendQRCode(qrCodeEntity, res);
 });
 
 /**
