@@ -44,48 +44,6 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 /**
  * @swagger
- * /generateqr/generate-base64:
- *   post:
- *     summary: Generate a QR code base64 enoce on text.
- *     description: Generates a QR code containing the provided text.
- *     requestBody:
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               text:
- *                 type: string
- *                 required: true
- *                 description: The text to encode in the QR code.
- *                 default: https://www.skyracing.com.au
- *     responses:
- *       200:
- *         description: QR code base64 generated successfully.
- *       400:
- *         description: Bad request - missing URL.
- *       500:
- *         description: Internal server error.
- */
-app.post('/generateqr/generate-base64', (req, res) => {
-  const { text } = req.body;
-
-  if (!text) {
-    return res.status(400).json({ error: 'Text is required.' });
-  }
-
-  // Create a QR code for the URL
-  QRCode.toDataURL(text, (err, qrCodeURL) => {
-    if (err) {
-      return res.status(500).json({ error: 'Failed to generate QR code.' });
-    }
-
-    res.json({ qrCodeURL });
-  });
-});
-
-/**
- * @swagger
  * /generateqr/betfriends:
  *   post:
  *     summary: Generate a QR code for betfriends.
@@ -121,10 +79,26 @@ app.post('/generateqr/generate-base64', (req, res) => {
  *                 required: true
  *                 description: The Racing Type. e.g. 1
  *                 default: 1
- *               size:
+ *               logoImagePath:
+ *                 type: string
+ *                 description: The path to the logo image (optional, if provided will add logo in centre).
+ *                 default: images/tab-logo-white.png
+ *               qrSize:
  *                 type: integer
- *                 description: The size of the QR code. Default is 512.
- *                 default: 512  
+ *                 description: The size of the QR code (optional, default is 512).
+ *                 default: 512
+ *               logoSize:
+ *                 type: integer
+ *                 description: The size of the logo on the QR code (optional, default is 150).
+ *                 default: 150
+ *               outputFileName:
+ *                 type: string
+ *                 description: The name of the output file (optional, default is 'qrcode-with-logo.png').
+ *                 default: 'qrcode-with-logo.png'
+ *               outputDirectory:
+ *                 type: string
+ *                 description: The name of the output directory (optional, default is 'C:\images\').
+ *                 default: 'C:\images\' 
  *     responses:
  *       200:
  *         description: QR code generated successfully.
@@ -136,17 +110,28 @@ app.post('/generateqr/generate-base64', (req, res) => {
 app.post('/generateqr/betfriends', async (req, res) => {
   let url = 'https://www.tab.com.au/racing/';
 
+  const qrCodeEntity = {
+    text,
+    logoImagePath,
+    qrSize,
+    logoSize,
+    outputFileName,
+    outputDirectory
+  } = new QRCodeEntity(
+    req.body.text,
+    req.body.logoImagePath,
+    req.body.qrSize,
+    req.body.logoSize,
+    req.body.outputFileName,
+    req.body.outputDirectory
+  );
+
   let date = req.body.date;
   let trackName = req.body.trackName;
   let bravoCode = req.body.bravoCode;
   let racingType = req.body.racingType;
   let racingNumber = req.body.racingNumber;
-  let filename = req.body.filename;
   let options = {};
-
-  if (!filename) {
-    filename = "qr-code.png";
-  }
 
   if (!date) {
     return res.status(400).json({ error: 'Please enter date e.g. 2023-09-13' });
@@ -178,30 +163,10 @@ app.post('/generateqr/betfriends', async (req, res) => {
 
   url = url + '/' + racingNumber;
 
-  options.text = url;
+  qrCodeEntity.text = url;
 
-  const qrcodeGenerator = new QRCodeGenerator();
- 
-  let result = await qrcodeGenerator.imageByUrl(options, (err, filePath) => {
-    if (err) {
-      return res.status(500).json({ error: 'Failed to generate QR code.' });
-    }
-
-    // Set response headers for downloading the image
-    res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
-    res.setHeader('Content-Type', 'image/png');
-
-    // Send the QR code image file as a downloadable file
-    res.sendFile(filePath, (err) => {
-      if (err) {
-        console.error('Error sending file:', err);
-        res.status(500).json({ error: 'Failed to send QR code file.' });
-      }
-
-      // Delete the file after sending
-      fs.unlinkSync(filePath);
-    });
-  });// end imageByUrl
+    // Call the reusable method to generate and send the QR code
+    generateAndSendQRCode(qrCodeEntity, res);
 });
 
 /**
@@ -300,18 +265,32 @@ app.post('/generateqr/generate-file-logo', async (req, res) => {
     return res.status(400).json({ error: 'Text is required.' });
   }
   
+  // Call the reusable method to generate and send the QR code
+  generateAndSendQRCode(qrCodeEntity, res);
+});
+
+
+const generateAndSendQRCode = async (qrCodeEntity, res) => {
   try {
-    // If outputDirectory is not provided, set it to the current working directory
+    // Generate the QR code image file using qrCodeEntity
     const filePath = await generateQRCode(qrCodeEntity);
 
+    // Set response headers for downloading the image
+    res.setHeader('Content-Disposition', `attachment; filename="${qrCodeEntity.outputFileName}"`);
+    res.setHeader('Content-Type', 'image/png');
 
-    res.status(200).json({ success: 'Saved Image to: ' + filePath });
-
+    // Send the QR code image file as a downloadable file
+    res.sendFile(filePath, (err) => {
+      if (err) {
+        console.error('Error sending file:', err);
+        res.status(500).json({ error: 'Failed to send QR code file.' });
+      }
+    });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Failed to generate and download QR code with logo.' });
   }
-});
+};
 
 
 app.listen(port, () => {
