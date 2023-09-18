@@ -1,10 +1,11 @@
- const express = require('express');
+const express = require('express');
 const app = express();
 const port = 3000;
 const swaggerJsdoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
 const generateQRCode = require('./js/generate-qrcode');
 const QRCodeEntity = require('./entity/Qrcode.js');
+const MeetingHubEntity = require('./entity/Meetinghub.js');
 const Utils = require('./js/utils');
 
 app.use(express.json());
@@ -123,55 +124,33 @@ app.post('/generateqr/betfriends', async (req, res) => {
     req.body.outputDirectory
   );
 
-  let date = req.body.date;
-  let trackName = req.body.trackName;
-  let bravoCode = req.body.bravoCode;
-  let racingType = req.body.racingType;
-  let racingNumber = req.body.racingNumber;
+  const { date, trackName, bravoCode, racingType, racingNumber } = req.body;
 
-  if (!date) {
-    return res.status(400).json({ error: 'Please enter date e.g. 2023-09-13' });
-  }
-
-  url = url + date;
-
-  if (!trackName) {
-    return res.status(400).json({ error: 'Please enter trackname e.g. SANDOWN' });
-  }
-
-  url = url + '/' + trackName;
-
-  if (!bravoCode) {
-    return res.status(400).json({ error: 'Please enter bravoCode e.g. SAN' });
-  }
-
-  url = url + '/' + bravoCode;
-
-  if (!racingType) {
-    return res.status(400).json({ error: 'Please enter racingType e.g. R' });
-  }
-
-  url = url + '/' + racingType;
-
-  if (!racingNumber) {
-    return res.status(400).json({ error: 'Please enter racingNumber e.g. 1' });
-  }
-
-  url = url + '/' + racingNumber;
-
-  if (!req.body.outputFileName) {
-    // strip the base domain from the filename.
-    let filename = url.replace(baseurl, '');
-    // Use the Utils class to generate a valid filename based on the text (URL)
-    qrCodeEntity.outputFileName = utils.convert(filename) + '.png';
-  }
+  // Create an instance of MeetingHubEntity
+  const meetingHubEntity = new MeetingHubEntity(date, trackName, bravoCode, racingType, racingNumber);
   
-  // Create the url link.
-  qrCodeEntity.text = url;
+  try {
+    // Validate the entity to check if it meets the criteria
+    meetingHubEntity.validate();
+   
+    // If validation passes, proceed with generating and sending the QR code
+    qrCodeEntity.text = 'https://www.tab.com.au/racing/' + date + '/' + trackName + '/' + bravoCode + '/' + racingType + '/' + racingNumber;
 
-  // res.json({ url :  qrCodeEntity.outputFileName });
-  // Call the reusable method to generate and send the QR code
-  generateAndSendQRCode(qrCodeEntity, res);
+    let url = qrCodeEntity.text;
+    // if we dont specify the output name, generate one.
+    if (!req.body.outputFileName) {
+      // strip the base domain from the filename.
+      let filename = url.replace(baseurl, '');
+      // Use the Utils class to generate a valid filename based on the text (URL)
+      qrCodeEntity.outputFileName = utils.convert(filename) + '.png';
+    }
+
+    // Call the reusable method to generate and send the QR code
+    generateAndSendQRCode(qrCodeEntity, res);
+  } catch (error) {
+    console.error(error.message);
+    res.status(400).json({ error: error.message });
+  }
 });
 
 /**
