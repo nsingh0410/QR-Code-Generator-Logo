@@ -1,5 +1,5 @@
 const qrcode = require('qrcode');
-const { createCanvas, loadImage } = require('canvas');
+const Jimp = require('jimp');
 const fs = require('fs');
 const path = require('path');
 
@@ -7,50 +7,35 @@ const generateQRCode = async (qrCodeEntity) => {
   try {
     // Destructure properties from the QRCodeEntity instance
     const { text, logoImagePath, qrSize, logoSize, outputFileName, outputDirectory } = qrCodeEntity;
-    
+
     // Generate the QR code
     const qrCode = await qrcode.toDataURL(text, { errorCorrectionLevel: 'H', width: qrSize });
 
-    // Load the logo image using the provided logoImagePath
-    const canvas = createCanvas(qrSize, qrSize);
-    const ctx = canvas.getContext('2d');
-    const qrImage = await loadImage(qrCode);
+    // Load the QR code image using the generated data URL
+    const qrImage = await Jimp.read(Buffer.from(qrCode.replace('data:image/png;base64,', ''), 'base64'));
 
     if (logoImagePath) {
-      const logo = await loadImage(logoImagePath);
+      // Load the logo image using the provided logoImagePath
+      const logo = await Jimp.read(logoImagePath);
+
+      // Resize the logo to fit within the specified size
+      logo.resize(logoSize, logoSize);
 
       // Calculate the position to center the resized logo on the QR code
-      const centerX = (qrSize - logoSize) / 2;
-      const centerY = (qrSize - logoSize) / 2;
+      const centerX = (qrSize - logo.bitmap.width) / 2;
+      const centerY = (qrSize - logo.bitmap.height) / 2;
 
-      // Draw the QR code on the canvas
-      ctx.drawImage(qrImage, 0, 0, qrSize, qrSize);
-
-      // Draw the resized logo on the canvas
-      ctx.drawImage(logo, centerX, centerY, logoSize, logoSize);
-    } else {
-      // If no logoImagePath is provided, only draw the QR code
-      ctx.drawImage(qrImage, 0, 0, qrSize, qrSize);
+      // Composite the logo onto the QR code
+      qrImage.composite(logo, centerX, centerY);
     }
 
-    // Save the canvas as an image file
-    const stream = canvas.createPNGStream();
-    //const fileStream = fs.createWriteStream(outputFileName);
-    let fileStream = fs.createWriteStream(`${outputFileName}`);
-    if (outputDirectory) {
-      console.log(`${outputDirectory}${outputFileName}`);
-       fileStream = fs.createWriteStream(`${outputDirectory}${outputFileName}`);
-    }
+    // Set the output path
+    const outputPath = path.join(outputDirectory || '', outputFileName);
 
-    return new Promise((resolve, reject) => {
-      stream.pipe(fileStream);
-      stream.on('end', () => {
-        resolve(outputFileName);
-      });
-      stream.on('error', (error) => {
-        reject(error);
-      });
-    });
+    // Write the composite image to the output file
+    await qrImage.writeAsync(outputPath);
+
+    return outputPath;
   } catch (error) {
     console.error('Error generating QR code with logo:', error);
     throw error;

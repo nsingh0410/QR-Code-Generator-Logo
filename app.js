@@ -304,10 +304,8 @@ app.post('/generateqr/generate-file-logo', async (req, res) => {
     // If outputDirectory is not provided, set it to the current working directory
     const filePath = await generateQRCode(qrCodeEntity);
 
-    // Construct an absolute file path using path.join
-    const absoluteFilePath = path.join(outputDirectory || process.cwd(), filePath);
 
-    res.status(200).json({ success: 'Saved Image to: ' + absoluteFilePath });
+    res.status(200).json({ success: 'Saved Image to: ' + filePath });
 
   } catch (error) {
     console.error(error);
