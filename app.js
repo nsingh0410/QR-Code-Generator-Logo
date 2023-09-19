@@ -141,18 +141,18 @@ app.post('/generateqr/betfriends', async (req, res) => {
     // if we dont specify the output name, generate one.
     if (!req.body.outputFileName) {
       // strip the base domain from the filename.
-      // let filename = url.replace(baseurl, '');
-      // // Use the Utils class to generate a valid filename based on the text (URL)
-      // qrCodeEntity.outputFileName = utils.convert(filename) + '.png';
+      let filename = url.replace(baseurl, '');
+      // Use the Utils class to generate a valid filename based on the text (URL)
+       qrCodeEntity.outputFileName = utils.convert(filename) + '.png';
 
-      const skyOnAirModel = new SkyOnAirModel.SkyOnAirModel();
-      const db = await skyOnAirModel.getRacesTab(meetingHubEntity);
+      //const skyOnAirModel = new SkyOnAirModel.SkyOnAirModel();
+      // const db = await skyOnAirModel.getRacesTab(meetingHubEntity);
       
-      res.send({'record' : JSON.stringify(db.recordset)});
+      //res.send({'record' : JSON.stringify(db.recordset)});
     }
 
     // Call the reusable method to generate and send the QR code
-    //generateAndSendQRCode(qrCodeEntity, res);
+    generateAndSendQRCode(qrCodeEntity, res);
   } catch (error) {
     console.error(error.message);
     res.status(400).json({ error: error.message });
@@ -251,12 +251,19 @@ app.post('/generateqr/generate-file-logo', async (req, res) => {
     req.body.outputDirectory
   );
 
-  if (!text) {
-    return res.status(400).json({ error: 'Text is required.' });
+  try {
+    // Assign text to qrCodeEntity
+    qrCodeEntity.text = text;
+
+    // Validate the entity to check if it meets the criteria
+    qrCodeEntity.validate();
+   
+    // Call the reusable method to generate and send the QR code
+    generateAndSendQRCode(qrCodeEntity, res);
+  } catch (error) {
+    console.error(error.message);
+    res.status(400).json({ error: error.message });
   }
-  
-  // Call the reusable method to generate and send the QR code
-  generateAndSendQRCode(qrCodeEntity, res);
 });
 
 
