@@ -9,6 +9,7 @@ const MeetingHubEntity = require('./entity/Meetinghub.js');
 const Utils = require('./js/utils');
 const SkyOnAirModel = require('./models/skyonair.js');
 const utils = new Utils();
+const path = require('path');
 
 
 app.use(express.json());
@@ -243,12 +244,15 @@ const generateAndSendQRCode = async (qrCodeEntity, res) => {
     // Generate the QR code image file using qrCodeEntity
     const filePath = await generateQRCode(qrCodeEntity);
 
+    // Construct an absolute path to the file
+    const absoluteFilePath = path.resolve(qrCodeEntity.outputDirectory, qrCodeEntity.outputFileName);
+
     // Set response headers for downloading the image
     res.setHeader('Content-Disposition', `attachment; filename="${qrCodeEntity.outputFileName}"`);
     res.setHeader('Content-Type', 'image/png');
 
     // Send the QR code image file as a downloadable file
-    res.sendFile(filePath, (err) => {
+    res.sendFile(absoluteFilePath, (err) => {
       if (err) {
         console.error('Error sending file:', err);
         res.status(500).json({ error: 'Failed to send QR code file.' });
@@ -260,7 +264,8 @@ const generateAndSendQRCode = async (qrCodeEntity, res) => {
   }
 };
 
-
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });
+
+module.exports = app;
