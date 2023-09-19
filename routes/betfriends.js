@@ -75,10 +75,8 @@ router.post('/generateqr/betfriends', async (req, res) => {
   let url = 'https://www.tab.com.au/racing/';
   let baseurl = url;
 
-  // Create an instance of createQRCodeEntity
+  // Create an instance of createQRCodeEntity and MeetingHubEntity
   const qrCodeEntity = QRCodeEntity.createQRCodeEntity(req.body);
-  
-  // Create an instance of MeetingHubEntity
   const meetingHubEntity = MeetingHubEntity.createMeetingHubEntity(req.body);
 
   try {
@@ -88,14 +86,11 @@ router.post('/generateqr/betfriends', async (req, res) => {
     // If validation passes, proceed with generating and sending the QR code
     qrCodeEntity.text = meetingHubEntity.link();
 
-    let url = qrCodeEntity.text;
-    
     // if we dont specify the output name, generate one.
     if (!req.body.outputFileName) {
-      // strip the base domain from the filename.
-      let filename = url.replace(baseurl, '');
-
       // Use the Utils class to generate a valid filename based on the text (URL)
+      let url = qrCodeEntity.text;
+      let filename = url.replace(baseurl, '');
       qrCodeEntity.outputFileName = utils.convert(filename) + '.png';
     }
 

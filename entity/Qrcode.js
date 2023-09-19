@@ -1,4 +1,3 @@
-// QRCodeEntity.js
 class QRCodeEntity {
   constructor(text, logoImagePath, qrSize = 512, logoSize = 150, outputFileName = 'qrcode-with-logo.png', outputDirectory = '') {
     this.text = text;

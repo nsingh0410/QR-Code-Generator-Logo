@@ -1,6 +1,5 @@
 const qrcode = require('qrcode');
 const Jimp = require('jimp');
-const fs = require('fs');
 const path = require('path');
 
 const generateQRCode = async (qrCodeEntity) => {
