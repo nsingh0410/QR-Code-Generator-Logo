@@ -15,6 +15,12 @@ class QRCodeEntity {
       throw new Error('Please enter text e.g. https://www.skyracing.com.au');
     }
   }
+
+  // Static method to create a QRCodeEntity instance from request body
+  static createQRCodeEntity(reqBody) {
+    const { text, logoImagePath, qrSize, logoSize, outputFileName, outputDirectory } = reqBody;
+    return new QRCodeEntity(text, logoImagePath, qrSize, logoSize, outputFileName, outputDirectory);
+  }
 }
 
 module.exports = QRCodeEntity;

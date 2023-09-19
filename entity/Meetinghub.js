@@ -29,6 +29,16 @@ class MeetingHubEntity {
       throw new Error('Please enter racingNumber e.g. 1');
     }
   }
+
+  link() {
+    return 'https://www.tab.com.au/racing/' + this.date + '/' + this.trackName + '/' + this.bravoCode + '/' + this.racingType + '/' + this.racingNumber;
+  }
+
+  // Static method to create a MeetingHubEntity instance from request body
+  static createMeetingHubEntity(reqBody) {
+    const { date, trackName, bravoCode, racingType, racingNumber } = reqBody;
+    return new MeetingHubEntity(date, trackName, bravoCode, racingType, racingNumber);
+  }
 }
   
   module.exports = MeetingHubEntity;

@@ -8,6 +8,8 @@ const QRCodeEntity = require('./entity/Qrcode.js');
 const MeetingHubEntity = require('./entity/Meetinghub.js');
 const Utils = require('./js/utils');
 const SkyOnAirModel = require('./models/skyonair.js');
+const utils = new Utils();
+
 
 app.use(express.json());
 
@@ -106,49 +108,29 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.post('/generateqr/betfriends', async (req, res) => {
   let url = 'https://www.tab.com.au/racing/';
   let baseurl = url;
-  // Create an instance of the Utils class
-  const utils = new Utils();
 
-  const qrCodeEntity = {
-    text,
-    logoImagePath,
-    qrSize,
-    logoSize,
-    outputFileName,
-    outputDirectory
-  } = new QRCodeEntity(
-    req.body.text,
-    req.body.logoImagePath,
-    req.body.qrSize,
-    req.body.logoSize,
-    req.body.outputFileName,
-    req.body.outputDirectory
-  );
-
-  const { date, trackName, bravoCode, racingType, racingNumber } = req.body;
-
-  // Create an instance of MeetingHubEntity
-  const meetingHubEntity = new MeetingHubEntity(date, trackName, bravoCode, racingType, racingNumber);
+  // Create an instance of createQRCodeEntity
+  const qrCodeEntity = QRCodeEntity.createQRCodeEntity(req.body);
   
+  // Create an instance of MeetingHubEntity
+  const meetingHubEntity = MeetingHubEntity.createMeetingHubEntity(req.body);
+
   try {
     // Validate the entity to check if it meets the criteria
     meetingHubEntity.validate();
    
     // If validation passes, proceed with generating and sending the QR code
-    qrCodeEntity.text = 'https://www.tab.com.au/racing/' + date + '/' + trackName + '/' + bravoCode + '/' + racingType + '/' + racingNumber;
+    qrCodeEntity.text = meetingHubEntity.link();
 
     let url = qrCodeEntity.text;
+    
     // if we dont specify the output name, generate one.
     if (!req.body.outputFileName) {
       // strip the base domain from the filename.
       let filename = url.replace(baseurl, '');
+
       // Use the Utils class to generate a valid filename based on the text (URL)
        qrCodeEntity.outputFileName = utils.convert(filename) + '.png';
-
-      //const skyOnAirModel = new SkyOnAirModel.SkyOnAirModel();
-      // const db = await skyOnAirModel.getRacesTab(meetingHubEntity);
-      
-      //res.send({'record' : JSON.stringify(db.recordset)});
     }
 
     // Call the reusable method to generate and send the QR code
@@ -235,26 +217,11 @@ app.post('/generateqr/meetinghub', async (req, res) => {
  *         description: Internal server error. Failed to generate or download the QR code with a logo.
  */
 app.post('/generateqr/generate-file-logo', async (req, res) => {
-  const qrCodeEntity = {
-    text,
-    logoImagePath,
-    qrSize,
-    logoSize,
-    outputFileName,
-    outputDirectory
-  } = new QRCodeEntity(
-    req.body.text,
-    req.body.logoImagePath,
-    req.body.qrSize,
-    req.body.logoSize,
-    req.body.outputFileName,
-    req.body.outputDirectory
-  );
+  
+    // Create an instance of createQRCodeEntity
+    const qrCodeEntity = QRCodeEntity.createQRCodeEntity(req.body);
 
   try {
-    // Assign text to qrCodeEntity
-    qrCodeEntity.text = text;
-
     // Validate the entity to check if it meets the criteria
     qrCodeEntity.validate();
    
@@ -266,7 +233,11 @@ app.post('/generateqr/generate-file-logo', async (req, res) => {
   }
 });
 
-
+/**
+ * Generate QR code write to location and display the QR.
+ * @param {*} qrCodeEntity 
+ * @param {*} res 
+ */
 const generateAndSendQRCode = async (qrCodeEntity, res) => {
   try {
     // Generate the QR code image file using qrCodeEntity
