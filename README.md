@@ -24,6 +24,7 @@ You can switch between each server.
 
 ## Unit tests
 
-command to run unit tests
+command to run unit tests:
+
 npx mocha app.test.js
 
