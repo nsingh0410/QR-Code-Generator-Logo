@@ -7,6 +7,7 @@ const generateQRCode = require('./js/generate-qrcode');
 const QRCodeEntity = require('./entity/Qrcode.js');
 const MeetingHubEntity = require('./entity/Meetinghub.js');
 const Utils = require('./js/utils');
+const SkyOnAirModel = require('./models/skyonair.js');
 
 app.use(express.json());
 
@@ -140,13 +141,18 @@ app.post('/generateqr/betfriends', async (req, res) => {
     // if we dont specify the output name, generate one.
     if (!req.body.outputFileName) {
       // strip the base domain from the filename.
-      let filename = url.replace(baseurl, '');
-      // Use the Utils class to generate a valid filename based on the text (URL)
-      qrCodeEntity.outputFileName = utils.convert(filename) + '.png';
+      // let filename = url.replace(baseurl, '');
+      // // Use the Utils class to generate a valid filename based on the text (URL)
+      // qrCodeEntity.outputFileName = utils.convert(filename) + '.png';
+
+      const skyOnAirModel = new SkyOnAirModel.SkyOnAirModel();
+      const db = await skyOnAirModel.getRacesTab(meetingHubEntity);
+      
+      res.send({'record' : JSON.stringify(db.recordset)});
     }
 
     // Call the reusable method to generate and send the QR code
-    generateAndSendQRCode(qrCodeEntity, res);
+    //generateAndSendQRCode(qrCodeEntity, res);
   } catch (error) {
     console.error(error.message);
     res.status(400).json({ error: error.message });
