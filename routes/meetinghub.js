@@ -7,6 +7,8 @@ const router = express.Router();
  *   post:
  *     summary: Generate a QR code for meetinghub.
  *     description: Generates a QR code for meetinghub containing the post request input data.
+ *     tags:
+ *       - QR Code Generator
  *     requestBody:
  *       content:
  *         application/json:

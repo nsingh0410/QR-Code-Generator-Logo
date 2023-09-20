@@ -6,12 +6,17 @@ const Utils = require('../js/utils');
 const generateQRCode = require('../js/generate-qrcode');
 const utils = new Utils();
 
+// Set a custom tag for the router
+router.tag = 'QR Code Generator';
+
 /**
  * @swagger
  * /generateqr/betfriends:
  *   post:
  *     summary: Generate a QR code for betfriends.
  *     description: Generates a QR code for betfriends containing the post request input data.
+ *     tags:
+ *       - QR Code Generator
  *     requestBody:
  *       content:
  *         application/json:
@@ -45,7 +50,7 @@ const utils = new Utils();
  *                 default: 1
  *               logoImagePath:
  *                 type: string
- *                 description: The path to the logo image (optional, if provided will add logo in centre).
+ *                 description: The path to the logo image (optional, if provided will add logo in the center).
  *                 default: images/logos/tab-logo-white.png
  *               qrSize:
  *                 type: integer

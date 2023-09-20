@@ -11,6 +11,8 @@ const utils = new Utils();
  *   post:
  *     summary: Generate a QR code with a logo and download it.
  *     description: Generate a QR code with a logo, customize its appearance, and download it as an image file.
+ *     tags:
+ *       - QR Code Generator
  *     requestBody:
  *       required: true
  *       content:

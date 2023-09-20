@@ -35,7 +35,9 @@ class Betfriends {
   }
 
   filename() {
-    return this.date.replace('-', '') + this.bravoCode + this.racingType + this.racingNumber;
+    let strippedDate = this.date.replace(/-/g, '');
+    
+    return strippedDate + '-' + this.bravoCode + this.racingType + this.racingNumber;
   }
 
   // Static method to create a MeetingHubEntity instance from request body
