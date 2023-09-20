@@ -46,7 +46,7 @@ const utils = new Utils();
  *               logoImagePath:
  *                 type: string
  *                 description: The path to the logo image (optional, if provided will add logo in centre).
- *                 default: images/tab-logo-white.png
+ *                 default: images/logos/tab-logo-white.png
  *               qrSize:
  *                 type: integer
  *                 description: The size of the QR code (optional, default is 512).

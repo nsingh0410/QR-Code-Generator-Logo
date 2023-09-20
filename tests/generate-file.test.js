@@ -17,7 +17,7 @@ describe('generate-file API', () => {
         .post('/generateqr/generate-file')
         .send({
             "text" : "https://www.skyracing.com.au",
-            "logoImagePath": "images/tab-logo-white.png",
+            "logoImagePath": "images/logos/tab-logo-white.png",
             "qrSize": 512,
             "logoSize": 150,
             "outputDirectory": imageDir

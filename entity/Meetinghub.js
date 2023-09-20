@@ -41,5 +41,5 @@ class MeetingHub {
   }
 }
   
-  module.exports = MeetingHub;
+module.exports = MeetingHub;
   

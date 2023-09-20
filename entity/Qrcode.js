@@ -8,7 +8,6 @@ class QRCode {
     this.logoSize = logoSize;
     this.outputFileName = outputFileName;
     this.outputDirectory = outputDirectory || process.env.QRCODE_OUTPUT_DIRECTORY || '';
-    
   }
 
   // Validator method to check if the entity meets the criteria

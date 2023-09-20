@@ -32,14 +32,13 @@ const swaggerOptions = {
         url: 'http://localhost:3000',
         description: 'Local development server',
       }
-      
     ],
   },
   apis: [
   'routes/betfriends.js', 
   'routes/generate-file.js', 
   'routes/meetinghub.js'
-], // Add your API file here
+],
 };
 
 const swaggerSpec = swaggerJsdoc(swaggerOptions);

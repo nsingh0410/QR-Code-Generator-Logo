@@ -21,7 +21,7 @@ describe('Betfriends API', () => {
             "bravoCode": "NFP",
             "racingType": "H",
             "racingNumber": "1",
-            "logoImagePath": "images/tab-logo-white.png",
+            "logoImagePath": "images/logos/tab-logo-white.png",
             "qrSize": 512,
             "logoSize": 150,
             "outputDirectory": imageDir

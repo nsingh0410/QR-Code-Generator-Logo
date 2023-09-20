@@ -2,8 +2,7 @@ const chai = require('chai');
 const path = require('path');
 
 // Define the root directory variable based on your project structure
-const rootDirectory = path.resolve(__dirname, '..', '..', '..'); // Adjust the number of ".." to match your project structure
-
+const rootDirectory = path.resolve(__dirname, '..', '..', '..');
 const MeetingHub = require(path.join(rootDirectory, 'entity', 'meetinghub.js')); // Use the rootDirectory variable
 const expect = chai.expect;
 
@@ -38,7 +37,7 @@ describe('MeetingHub', () => {
         "bravoCode": "NFP",
         "racingType": "H",
         "racingNumber": "1",
-        "logoImagePath": "images/tab-logo-white.png",
+        "logoImagePath": "images/logos/tab-logo-white.png",
         "qrSize": 512,
         "logoSize": 150,
         "outputDirectory": "tests/images"
