@@ -1,9 +1,10 @@
 # DigiAPI
-# QR Code Generator
 
 [![Coverage](https://img.shields.io/badge/coverage-95%25-brightgreen?logo=coveralls&logoColor=white)](https://gitlab.skyracing.cloud/sky-dev-team/chrysalis/digiapi/-/blob/main/coverage/lcov-report/index.html)
 
-![Alt text](images/tab-logo-white.png)
+![Alt text](images/logos/tab-logo-white.png)
+
+# QR Code Generator
 
 ## Installation Instructions
 
@@ -29,4 +30,3 @@ You can switch between each server.
 command to run unit tests:
 
 npx mocha app.test.js
-
