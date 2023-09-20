@@ -37,7 +37,7 @@ class MeetingHub {
   // Static method to create a MeetingHubEntity instance from request body
   static createMeetingHub(reqBody) {
     const { date, trackName, bravoCode, racingType, racingNumber } = reqBody;
-    return new MeetingHubEntity(date, trackName, bravoCode, racingType, racingNumber);
+    return new MeetingHub(date, trackName, bravoCode, racingType, racingNumber);
   }
 }
   

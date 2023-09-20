@@ -1,7 +1,10 @@
 const chai = require('chai');
-const MeetingHub = require('../../../entity/meetinghub.js'); // Adjust the import path as needed
-//let imageDir = appDirectory + '/images';
+const path = require('path');
 
+// Define the root directory variable based on your project structure
+const rootDirectory = path.resolve(__dirname, '..', '..', '..'); // Adjust the number of ".." to match your project structure
+
+const MeetingHub = require(path.join(rootDirectory, 'entity', 'meetinghub.js')); // Use the rootDirectory variable
 const expect = chai.expect;
 
 describe('MeetingHub', () => {
