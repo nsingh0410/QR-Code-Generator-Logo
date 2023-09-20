@@ -35,7 +35,8 @@ class Utils {
       });
     } catch (error) {
       console.error(error);
-      res.status(500).json({ error: 'Failed to generate and download QR code with logo.' });
+      
+      res.status(500).json(JSON.stringify(error));
     }
   }
 }
