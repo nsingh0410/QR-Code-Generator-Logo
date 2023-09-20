@@ -1,4 +1,4 @@
-class QRCodeEntity {
+class QRCode {
   constructor(text, logoImagePath, qrSize = 512, logoSize = 150, outputFileName = 'qrcode-with-logo.png', outputDirectory = '') {
     this.text = text;
     this.logoImagePath = logoImagePath;
@@ -16,10 +16,10 @@ class QRCodeEntity {
   }
 
   // Static method to create a QRCodeEntity instance from request body
-  static createQRCodeEntity(reqBody) {
+  static createQRCode(reqBody) {
     const { text, logoImagePath, qrSize, logoSize, outputFileName, outputDirectory } = reqBody;
-    return new QRCodeEntity(text, logoImagePath, qrSize, logoSize, outputFileName, outputDirectory);
+    return new QRCode(text, logoImagePath, qrSize, logoSize, outputFileName, outputDirectory);
   }
 }
 
-module.exports = QRCodeEntity;
+module.exports = QRCode;

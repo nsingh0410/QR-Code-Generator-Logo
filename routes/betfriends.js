@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const QRCodeEntity = require('../entity/Qrcode.js');
-const MeetingHubEntity = require('../entity/Meetinghub.js');
+const BetfriendsEntity = require('../entity/betfriends.js');
 const Utils = require('../js/utils');
 const generateQRCode = require('../js/generate-qrcode');
 const utils = new Utils();
@@ -73,25 +73,22 @@ const utils = new Utils();
  */
 router.post('/generateqr/betfriends', async (req, res) => {
   let url = 'https://www.tab.com.au/racing/';
-  let baseurl = url;
 
   // Create an instance of createQRCodeEntity and MeetingHubEntity
-  const qrCodeEntity = QRCodeEntity.createQRCodeEntity(req.body);
-  const meetingHubEntity = MeetingHubEntity.createMeetingHubEntity(req.body);
+  const qrCodeEntity = QRCodeEntity.createQRCode(req.body);
+  const betfriendsEntity = BetfriendsEntity.createBetfriends(req.body);
 
   try {
     // Validate the entity to check if it meets the criteria
-    meetingHubEntity.validate();
+    betfriendsEntity.validate();
    
     // If validation passes, proceed with generating and sending the QR code
-    qrCodeEntity.text = meetingHubEntity.link();
+    qrCodeEntity.text = betfriendsEntity.link();
 
     // if we dont specify the output name, generate one.
     if (!req.body.outputFileName) {
       // Use the Utils class to generate a valid filename based on the text (URL)
-      let url = qrCodeEntity.text;
-      let filename = url.replace(baseurl, '');
-      qrCodeEntity.outputFileName = utils.convert(filename) + '.png';
+      qrCodeEntity.outputFileName = betfriendsEntity.filename() + '.png';
     }
 
     // Call the reusable method to generate and send the QR code

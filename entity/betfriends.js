@@ -1,4 +1,4 @@
-class MeetingHub {
+class Betfriends {
   constructor(date, trackName, bravoCode, racingType, racingNumber) {
     this.date = date;
     this.trackName = trackName;
@@ -34,12 +34,16 @@ class MeetingHub {
     return 'https://www.tab.com.au/racing/' + this.date + '/' + this.trackName + '/' + this.bravoCode + '/' + this.racingType + '/' + this.racingNumber;
   }
 
+  filename() {
+    return this.date.replace('-', '') + this.bravoCode + this.racingType + this.racingNumber;
+  }
+
   // Static method to create a MeetingHubEntity instance from request body
-  static createMeetingHub(reqBody) {
+  static createBetfriends(reqBody) {
     const { date, trackName, bravoCode, racingType, racingNumber } = reqBody;
-    return new MeetingHubEntity(date, trackName, bravoCode, racingType, racingNumber);
+    return new Betfriends(date, trackName, bravoCode, racingType, racingNumber);
   }
 }
   
-  module.exports = MeetingHub;
+  module.exports = Betfriends;
   

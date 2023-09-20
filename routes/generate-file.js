@@ -53,8 +53,8 @@ const utils = new Utils();
  */
 router.post('/generateqr/generate-file', async (req, res) => {
   
-    // Create an instance of createQRCodeEntity
-    const qrCodeEntity = QRCodeEntity.createQRCodeEntity(req.body);
+  // Create an instance of createQRCodeEntity
+  const qrCodeEntity = QRCodeEntity.createQRCode(req.body);
 
   try {
     // Validate the entity to check if it meets the criteria
