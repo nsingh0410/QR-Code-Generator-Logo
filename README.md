@@ -1,7 +1,7 @@
 # DigiAPI
 # QR Code Generator
 
-[![Coverage](https://img.shields.io/badge/coverage-95%25-brightgreen?logo=coveralls&logoColor=white)](URL_TO_YOUR_COVERAGE_REPORT)
+[![Coverage](https://img.shields.io/badge/coverage-95%25-brightgreen?logo=coveralls&logoColor=white)](https://gitlab.skyracing.cloud/sky-dev-team/chrysalis/digiapi/-/blob/main/coverage/lcov-report/index.html)
 
 ![Alt text](images/tab-logo-white.png)
 
