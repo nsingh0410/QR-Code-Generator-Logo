@@ -1,6 +1,8 @@
 # DigiAPI
 # QR Code Generator
 
+[![Coverage](https://img.shields.io/badge/coverage-95%25-brightgreen?logo=coveralls&logoColor=white)](URL_TO_YOUR_COVERAGE_REPORT)
+
 ![Alt text](images/tab-logo-white.png)
 
 ## Installation Instructions
