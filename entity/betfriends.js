@@ -1,5 +1,16 @@
-class Betfriends {
-  constructor(date, trackName, bravoCode, racingType, racingNumber) {
+const QRCode = require('./Qrcode');
+
+class Betfriends extends QRCode {
+  constructor(date = '', trackName, bravoCode, racingType, racingNumber, logoImagePath, outputDirectory) {
+    super(
+      'https://www.tab.com.au/racing/' + date + '/' + trackName + '/' + bravoCode + '/' + racingType + '/' + racingNumber, // link
+      logoImagePath,
+      undefined, // Parent qrSize
+      undefined, // Parent logoSize
+      date.replace(/-/g, '') + '_' + bravoCode + racingType + racingNumber + '.png', // filename 
+      outputDirectory
+    );
+
     this.date = date;
     this.trackName = trackName;
     this.bravoCode = bravoCode;
@@ -9,6 +20,8 @@ class Betfriends {
 
   // Validator method to check if the entity meets the criteria
   validate() {
+    super.validate(); // Call the validate method of the parent class
+
     if (!this.date) {
       throw new Error('Please enter date e.g. 2023-09-13');
     }
@@ -30,22 +43,11 @@ class Betfriends {
     }
   }
 
-  link() {
-    return 'https://www.tab.com.au/racing/' + this.date + '/' + this.trackName + '/' + this.bravoCode + '/' + this.racingType + '/' + this.racingNumber;
-  }
-
-  filename() {
-    let strippedDate = this.date.replace(/-/g, '');
-    
-    return strippedDate + '-' + this.bravoCode + this.racingType + this.racingNumber;
-  }
-
-  // Static method to create a MeetingHubEntity instance from request body
+  // Static method to create a Betfriends instance from request body
   static createBetfriends(reqBody) {
-    const { date, trackName, bravoCode, racingType, racingNumber } = reqBody;
-    return new Betfriends(date, trackName, bravoCode, racingType, racingNumber);
+    const { date, trackName, bravoCode, racingType, racingNumber, logoImagePath, outputDirectory} = reqBody;
+    return new Betfriends(date, trackName, bravoCode, racingType, racingNumber, logoImagePath, outputDirectory);
   }
 }
-  
+
 module.exports = Betfriends;
-  

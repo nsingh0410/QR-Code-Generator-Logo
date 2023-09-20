@@ -21,22 +21,6 @@ describe('Betfriends', () => {
     // Add similar tests for other required fields
   });
 
-  describe('link', () => {
-    it('should generate a valid link', () => {
-      const betfriends = new Betfriends('2023-09-13', 'SANDOWN', 'SAN', 'R', '1');
-      const expectedLink = 'https://www.tab.com.au/racing/2023-09-13/SANDOWN/SAN/R/1';
-      expect(betfriends.link()).to.equal(expectedLink);
-    });
-  });
-
-  describe('filename', () => {
-    it('should generate a valid filename', () => {
-      const betfriends = new Betfriends('2023-09-13', 'SANDOWN', 'SAN', 'R', '1');
-      const expectedFilename = '20230913-SANR1';
-      expect(betfriends.filename()).to.equal(expectedFilename);
-    });
-  });
-
   describe('createBetfriends', () => {
     it('should create a Betfriends instance from request body', () => {
       const reqBody = {

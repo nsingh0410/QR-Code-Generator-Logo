@@ -1,9 +1,8 @@
 const express = require('express');
 const router = express.Router();
-const QRCodeEntity = require('../entity/Qrcode.js');
-const Utils = require('../js/utils');
+const QRCode = require('../entity/Qrcode.js');
+const { generateAndSendQRCode } = require('../js/utils');
 const generateQRCode = require('../js/generate-qrcode');
-const utils = new Utils();
 
 /**
  * @swagger
@@ -56,14 +55,14 @@ const utils = new Utils();
 router.post('/generateqr/generate-file', async (req, res) => {
   
   // Create an instance of createQRCodeEntity
-  const qrCodeEntity = QRCodeEntity.createQRCode(req.body);
+  const qrCodeEntity = QRCode.createQRCode(req.body);
 
   try {
     // Validate the entity to check if it meets the criteria
     qrCodeEntity.validate();
    
     // Call the reusable method to generate and send the QR code
-    await utils.generateAndSendQRCode(qrCodeEntity, res, generateQRCode);
+    await generateAndSendQRCode(qrCodeEntity, res, generateQRCode);
   } catch (error) {
     console.error(error.message);
     res.status(400).json({ error: error.message });

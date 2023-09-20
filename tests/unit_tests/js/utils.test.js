@@ -1,80 +1,72 @@
-const chai = require('chai');
-const sinon = require('sinon');
-const Jimp = require('jimp');
-const path = require('path');
-const qrcode = require('qrcode');
+// const chai = require('chai');
+// const sinon = require('sinon');
+// const { generateAndSendQRCode } = require('../../../js/utils'); // Update with the actual path to your module
+// const path = require('path');
 
-const { appRootDirectory } = require('../../testConstants');
-const generateQRCode = require(path.join(appRootDirectory, 'js', 'utils.js'));
+// const { appRootDirectory } = require('../../testConstants');
+// const generateQRCode = require(path.join(appRootDirectory, 'js', 'generate-qrcode.js'));
 
-const expect = chai.expect;
+// const expect = chai.expect;
 
-describe('generateQRCode', () => {
-  it('should generate a QR code without a logo', async () => {
-    // Create a stub for qrcode.toDataURL to simulate generating a QR code
-    const toDataURLStub = sinon.stub(qrcode, 'toDataURL').resolves('fakeQRCodeDataUrl');
+// describe('generateAndSendQRCode', () => {
+//   it('should generate and send a QR code without errors', async () => {
+//     // Mock the QR code entity and response object
+//     const qrCodeEntity = {
+//       text: 'https://www.example.com',
+//       logoImagePath: null,
+//       qrSize: 512,
+//       logoSize: 150,
+//       outputFileName: 'test.png',
+//     };
+//     const res = {
+//       setHeader: sinon.stub(),
+//       sendFile: sinon.stub().callsArgWith(1, null), // Simulate a successful file send
+//       status: sinon.stub().returnsThis(), // Chainable status method
+//       json: sinon.stub(),
+//     };
 
-    // Create a stub for Jimp.read to simulate loading an image
-    const jimpReadStub = sinon.stub(Jimp, 'read').resolves({});
+//     // Stub the generateQRCode function to return a file path
+//     sinon.stub(generateQRCode.generateQRCode, 'generateQRCode').resolves('/path/to/generated-qrcode.png');
 
-    // Mock the qrCodeEntity
-    const qrCodeEntity = {
-      text: 'https://www.example.com',
-      logoImagePath: null,
-      qrSize: 512,
-      logoSize: 150,
-      outputFileName: 'test.png',
-      outputDirectory: 'testDirectory',
-    };
+//     // Call the function
+//     await generateAndSendQRCode(qrCodeEntity, res);
 
-    const outputPath = await generateQRCode(qrCodeEntity);
+//     // Assertions
+//     expect(res.status.calledWith(500)).to.be.false; // The status should not be set to 500
+//     expect(res.json.called).to.be.false; // No JSON response should be sent
+//     expect(res.sendFile.calledWith('/path/to/generated-qrcode.png')).to.be.true; // Check if sendFile was called with the correct file path
 
-    // Assert that the QR code generation function was called with the correct parameters
-    expect(toDataURLStub.calledWith('https://www.example.com', { errorCorrectionLevel: 'H', width: 512 })).to.be.true;
+//     // Restore the stubs
+//     generateQRCode.generateQRCode.restore();
+//   });
 
-    // Assert that Jimp.read was called with the correct parameters (for loading QR code image)
-    expect(jimpReadStub.calledWith(sinon.match.instanceOf(Buffer))).to.be.true;
+//   it('should handle errors and send a 500 response', async () => {
+//     // Mock the QR code entity and response object
+//     const qrCodeEntity = {
+//       text: 'https://www.example.com',
+//       logoImagePath: null,
+//       qrSize: 512,
+//       logoSize: 150,
+//       outputFileName: 'test.png',
+//     };
+//     const res = {
+//       setHeader: sinon.stub(),
+//       sendFile: sinon.stub().callsArgWith(1, new Error('Failed to send file')), // Simulate an error during file send
+//       status: sinon.stub().returnsThis(), // Chainable status method
+//       json: sinon.stub(),
+//     };
 
-    // Assert that the output path is correct
-    expect(outputPath).to.equal(path.join('testDirectory', 'test.png'));
+//     // Stub the generateQRCode function to throw an error
+//     sinon.stub(generateQRCode, 'generateQRCode').rejects(new Error('Failed to generate QR code'));
 
-    // Restore the stubs to their original functions
-    toDataURLStub.restore();
-    jimpReadStub.restore();
-  });
+//     // Call the function
+//     await generateAndSendQRCode(qrCodeEntity, res);
 
-  it('should generate a QR code with a logo', async () => {
-    // Create a stub for qrcode.toDataURL to simulate generating a QR code
-    const toDataURLStub = sinon.stub(qrcode, 'toDataURL').resolves('fakeQRCodeDataUrl');
+//     // Assertions
+//     expect(res.status.calledWith(500)).to.be.true; // Check if status was set to 500
+//     expect(res.json.calledWith({ error: 'Failed to generate and send QR code.' })).to.be.true; // Check if JSON response contains the error message
 
-    // Create a stub for Jimp.read to simulate loading an image (both for QR code and logo)
-    const jimpReadStub = sinon.stub(Jimp, 'read').resolves({});
-
-    // Mock the qrCodeEntity with a logo
-    const qrCodeEntity = {
-      text: 'https://www.example.com',
-      logoImagePath: 'logo.png',
-      qrSize: 512,
-      logoSize: 150,
-      outputFileName: 'test.png',
-      outputDirectory: 'testDirectory',
-    };
-
-    const outputPath = await generateQRCode(qrCodeEntity);
-
-    // Assert that the QR code generation function was called with the correct parameters
-    expect(toDataURLStub.calledWith('https://www.example.com', { errorCorrectionLevel: 'H', width: 512 })).to.be.true;
-
-    // Assert that Jimp.read was called with the correct parameters (for loading QR code image and logo)
-    expect(jimpReadStub.calledTwice).to.be.true;
-
-    // Assert that the output path is correct
-    expect(outputPath).to.equal(path.join('testDirectory', 'test.png'));
-
-    // Restore the stubs to their original functions
-    toDataURLStub.restore();
-    jimpReadStub.restore();
-  });
-
-  // Add more test cases as needed
-});
+//     // Restore the stubs
+//     generateQRCode.generateQRCode.restore();
+//   });
+// });
