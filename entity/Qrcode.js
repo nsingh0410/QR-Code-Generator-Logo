@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 class QRCode {
   constructor(text, logoImagePath, qrSize = 512, logoSize = 150, outputFileName = 'qrcode-with-logo.png', outputDirectory = '') {
     this.text = text;
@@ -5,7 +7,8 @@ class QRCode {
     this.qrSize = qrSize;
     this.logoSize = logoSize;
     this.outputFileName = outputFileName;
-    this.outputDirectory = outputDirectory;
+    this.outputDirectory = outputDirectory || process.env.QRCODE_OUTPUT_DIRECTORY || '';
+    
   }
 
   // Validator method to check if the entity meets the criteria
