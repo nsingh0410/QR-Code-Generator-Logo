@@ -1,5 +1,5 @@
 TN:
-SF:app.js
+SF:src\app.js
 FN:47,(anonymous_0)
 FNF:1
 FNH:1
@@ -28,7 +28,7 @@ BRF:0
 BRH:0
 end_of_record
 TN:
-SF:entity\Qrcode.js
+SF:src\entity\Qrcode.js
 FN:4,(anonymous_0)
 FN:14,(anonymous_1)
 FN:21,(anonymous_2)
@@ -64,7 +64,7 @@ BRF:9
 BRH:7
 end_of_record
 TN:
-SF:entity\betfriends.js
+SF:src\entity\betfriends.js
 FN:4,(anonymous_0)
 FN:22,(anonymous_1)
 FN:47,(anonymous_2)
@@ -111,7 +111,7 @@ BRF:11
 BRH:7
 end_of_record
 TN:
-SF:entity\meetinghub.js
+SF:src\entity\meetinghub.js
 FN:2,(anonymous_0)
 FN:11,(anonymous_1)
 FN:33,(anonymous_2)
@@ -157,7 +157,7 @@ BRF:10
 BRH:6
 end_of_record
 TN:
-SF:entity\qrcode.js
+SF:src\entity\qrcode.js
 FN:4,(anonymous_0)
 FN:14,(anonymous_1)
 FN:21,(anonymous_2)
@@ -193,7 +193,7 @@ BRF:9
 BRH:8
 end_of_record
 TN:
-SF:js\generate-qrcode.js
+SF:src\js\generate-qrcode.js
 FN:5,(anonymous_0)
 FNF:1
 FNH:1
@@ -228,7 +228,7 @@ BRF:4
 BRH:2
 end_of_record
 TN:
-SF:js\utils.js
+SF:src\js\utils.js
 FN:3,(anonymous_0)
 FN:13,(anonymous_1)
 FNF:2
@@ -256,7 +256,7 @@ BRF:2
 BRH:1
 end_of_record
 TN:
-SF:routes\betfriends.js
+SF:src\routes\betfriends.js
 FN:76,(anonymous_0)
 FNF:1
 FNH:1
@@ -281,7 +281,7 @@ BRF:0
 BRH:0
 end_of_record
 TN:
-SF:routes\generate-file.js
+SF:src\routes\generate-file.js
 FN:55,(anonymous_0)
 FNF:1
 FNH:1
@@ -305,7 +305,7 @@ BRF:0
 BRH:0
 end_of_record
 TN:
-SF:routes\meetinghub.js
+SF:src\routes\meetinghub.js
 FN:31,(anonymous_0)
 FNF:1
 FNH:0
