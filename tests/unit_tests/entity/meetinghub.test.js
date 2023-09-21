@@ -3,7 +3,7 @@ const path = require('path');
 
 // Define the root directory variable based on your project structure
 const { appRootDirectory } = require('../../testConstants');
-const MeetingHub = require(path.join(appRootDirectory, 'entity', 'meetinghub.js')); // Use the rootDirectory variable
+const MeetingHub = require(path.join(appRootDirectory, 'src','entity', 'meetinghub.js')); // Use the rootDirectory variable
 const expect = chai.expect;
 
 describe('MeetingHub', () => {

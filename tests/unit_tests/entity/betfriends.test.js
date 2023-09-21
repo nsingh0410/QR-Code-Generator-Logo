@@ -2,7 +2,7 @@ const chai = require('chai');
 const path = require('path');
 
 const { appRootDirectory } = require('../../testConstants');
-const Betfriends = require(path.join(appRootDirectory, 'entity', 'betfriends.js'));
+const Betfriends = require(path.join(appRootDirectory, 'src', 'entity', 'betfriends.js'));
 
 const expect = chai.expect;
 

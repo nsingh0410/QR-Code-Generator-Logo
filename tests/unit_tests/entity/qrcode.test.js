@@ -2,7 +2,7 @@ const chai = require('chai');
 const path = require('path');
 
 const { appRootDirectory } = require('../../testConstants');
-const QRCode = require(path.join(appRootDirectory, 'entity', 'qrcode.js')); // Use the rootDirectory variable
+const QRCode = require(path.join(appRootDirectory, 'src', 'entity', 'qrcode.js')); // Use the rootDirectory variable
 const expect = chai.expect;
 
 describe('QRCode', () => {

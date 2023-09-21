@@ -1,10 +1,10 @@
 const chai = require('chai');
 const sinon = require('sinon');
-const { generateAndSendQRCode } = require('../../../js/utils'); // Update with the actual path to your module
 const path = require('path');
-
 const { appRootDirectory } = require('../../testConstants');
-const generateQRCode = require(path.join(appRootDirectory, 'js', 'generate-qrcode.js'));
+
+const { generateAndSendQRCode } = require(path.join(appRootDirectory, 'src', 'js', 'utils.js')); // Update with the actual path to your module
+const generateQRCode = require(path.join(appRootDirectory, 'src', 'js', 'generate-qrcode.js'));
 
 const expect = chai.expect;
 

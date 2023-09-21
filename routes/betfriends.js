@@ -83,6 +83,10 @@ router.post('/generateqr/betfriends', async (req, res) => {
     // Validate the entity to check if it meets the criteria
     qrCodeEntity.validate();
 
+    if (req.body.outputFilename) {
+      qrCodeEntity.outputFilename = req.body.outputFilename;
+    }
+
     // Call the reusable method to generate and send the QR code
     await generateAndSendQRCode(qrCodeEntity, res);
   } catch (error) {
