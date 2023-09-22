@@ -30,7 +30,7 @@ deploy:
   update-readme-badge:
   stage: deploy
   script:
-    - node update-coverage-badge.js
+    - node badges/update-coverage-badge.js
   only:
     - main
 
