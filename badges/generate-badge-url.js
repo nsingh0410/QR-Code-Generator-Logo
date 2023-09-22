@@ -24,10 +24,6 @@ for (const line of lines) {
 // Calculate the coverage percentage
 const coveragePercentage = (coveredLines / totalLines) * 100;
 
-// Generate the badge URL
-const badgeURL = `https://img.shields.io/badge/coverage-${coveragePercentage.toFixed(2)}%25-brightgreen?logo=coveralls&logoColor=white`;
-
-
 // Generate the badge Markdown
 const badgeMarkdown = `[![Coverage](https://img.shields.io/badge/coverage-${coveragePercentage.toFixed(2)}%25-brightgreen?logo=coveralls&logoColor=white)](https://gitlab.skyracing.cloud/sky-dev-team/chrysalis/digiapi/-/blob/main/coverage/lcov-report/index.html)`;
 
