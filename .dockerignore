@@ -3,3 +3,4 @@
 .git
 *.md
 .gitignore
+.nyc_output
