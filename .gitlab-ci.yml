@@ -33,4 +33,3 @@ update-readme-badge:
     - node badges/update-coverage-badge.js
   only:
     - main
-
