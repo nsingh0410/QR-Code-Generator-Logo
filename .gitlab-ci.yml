@@ -27,7 +27,7 @@ deploy:
   tags:
     - ff-dj-docker1
 
-  update-readme-badge:
+update-readme-badge:
   stage: deploy
   script:
     - node badges/update-coverage-badge.js
