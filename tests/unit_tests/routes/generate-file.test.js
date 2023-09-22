@@ -1,5 +1,4 @@
 const path = require('path'); // Add this line to import the path module
-const appDirectory = path.resolve(__dirname);
 const chai = require('chai');
 const chaiHttp = require('chai-http');
 const { appRootDirectory } = require('../../testConstants');

@@ -1,6 +1,6 @@
 # DigiAPI
 
-[![Coverage](https://img.shields.io/badge/coverage-95%25-brightgreen?logo=coveralls&logoColor=white)](https://gitlab.skyracing.cloud/sky-dev-team/chrysalis/digiapi/-/blob/main/coverage/lcov-report/index.html)
+[![Coverage](https://img.shields.io/badge/coverage-86.39%25-brightgreen?logo=coveralls&logoColor=white)](https://gitlab.skyracing.cloud/sky-dev-team/chrysalis/digiapi/-/blob/main/coverage/lcov-report/index.html)
 
 ![Alt text](images/logos/tab-logo-white.png)
 

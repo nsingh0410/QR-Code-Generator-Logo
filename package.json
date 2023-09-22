@@ -4,7 +4,7 @@
   "description": "",
   "main": "src/app.js",
   "scripts": {
-    "test": "nyc mocha tests/**/*.test.js --exit && node tests/cleanup.js",
+    "test": "nyc mocha tests/**/*.test.js --coverage --exit && node tests/cleanup.js",
     "prod": "node src/app.js"
   },
   "keywords": [],
@@ -26,6 +26,7 @@
     "chai": "^4.3.8",
     "chai-http": "^4.4.0",
     "mocha": "^10.2.0",
+    "nyc": "^15.1.0",
     "sinon": "^16.0.0",
     "sinon-express-mock": "^2.2.1",
     "supertest": "^6.3.3"

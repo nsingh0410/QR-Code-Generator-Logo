@@ -5,56 +5,40 @@ const path = require('path');
 const lcovFilePath = path.join(__dirname + '/../' , 'coverage', 'lcov.info');
 const lcovData = fs.readFileSync(lcovFilePath, 'utf-8');
 
-// Split the lcovData into lines
+
+// Parse the lcov data to calculate coverage
 const lines = lcovData.split('\n');
+let totalLines = 0;
+let coveredLines = 0;
 
-// Initialize coverage summary
-const coverageSummary = {
-  lines: { total: 0, covered: 0, skipped: 0, pct: 100 },
-  functions: { total: 0, covered: 0, skipped: 0, pct: 100 },
-  branches: { total: 0, covered: 0, skipped: 0, pct: 100 },
-};
-
-// Iterate through the lines
-lines.forEach((line) => {
+for (const line of lines) {
   if (line.startsWith('DA:')) {
-    // Line with coverage data
-    const [, hits, total] = line.match(/DA:(\d+),(\d+)/);
-    coverageSummary.lines.total += parseInt(total);
-    coverageSummary.lines.covered += parseInt(hits);
-  } else if (line.startsWith('BRDA:')) {
-    // Line with branch coverage data
-    const [, hits, total] = line.match(/BRDA:(\d+),(\d+),\d+,\d+/);
-    coverageSummary.branches.total += parseInt(total);
-    coverageSummary.branches.covered += parseInt(hits);
-  } else if (line.startsWith('FNDA:')) {
-    // Line with function coverage data
-    const [, hits, total] = line.match(/FNDA:(\d+),(\d+)/);
-    coverageSummary.functions.total += parseInt(total);
-    coverageSummary.functions.covered += parseInt(hits);
+    const [, hits] = line.split(',').map(Number);
+    totalLines++;
+    if (hits > 0) {
+      coveredLines++;
+    }
   }
-});
-
-// Calculate percentages
-const calculatePercentage = (covered, total) => (total > 0 ? (covered / total) * 100 : 100);
-coverageSummary.lines.pct = calculatePercentage(coverageSummary.lines.covered, coverageSummary.lines.total);
-coverageSummary.functions.pct = calculatePercentage(coverageSummary.functions.covered, coverageSummary.functions.total);
-coverageSummary.branches.pct = calculatePercentage(coverageSummary.branches.covered, coverageSummary.branches.total);
-
-// Output the coverage summary as JSON
-const summaryJSON = JSON.stringify(coverageSummary, null, 2);
-fs.writeFileSync('coverage-summary.json', summaryJSON);
-
-console.log('Coverage summary written to coverage-summary.json');
-
-// Function to generate the badge Markdown
-function generateBadgeMarkdown(coverage) {
-  return `[![Coverage](https://img.shields.io/badge/coverage-${coverage}%25-brightgreen)](lcov-report/index.html)`;
 }
 
-// Get the coverage percentage
-const coverage = getCoveragePercentage();
+// Calculate the coverage percentage
+const coveragePercentage = (coveredLines / totalLines) * 100;
 
-// Generate and display the badge Markdown
-const badgeMarkdown = generateBadgeMarkdown(coverage);
-console.log(badgeMarkdown);
+// Generate the badge URL
+const badgeURL = `https://img.shields.io/badge/coverage-${coveragePercentage.toFixed(2)}%25-brightgreen?logo=coveralls&logoColor=white`;
+
+
+// Generate the badge Markdown
+const badgeMarkdown = `[![Coverage](https://img.shields.io/badge/coverage-${coveragePercentage.toFixed(2)}%25-brightgreen?logo=coveralls&logoColor=white)](https://gitlab.skyracing.cloud/sky-dev-team/chrysalis/digiapi/-/blob/main/coverage/lcov-report/index.html)`;
+
+// Read the README.md file
+let readmeContent = fs.readFileSync('README.md', 'utf-8');
+
+// Define the badge pattern
+const badgePatternLine =/\[!\[Coverage\][^\]]*\]\([^)]+\)/;
+
+// Replace the placeholder with the badge Markdown
+readmeContent = readmeContent.replace(badgePatternLine, badgeMarkdown);
+
+// Write the updated README.md back to the file
+fs.writeFileSync('README.md', readmeContent);
