@@ -12,7 +12,7 @@ RUN npm install -g npm@10.1.0
 #RUN npm install
 COPY . .
 RUN ls
-RUN node badges/update-coverage-badge.js
+RUN node src/badges/update-coverage-badge.js
 RUN npm prune --production
 
 FROM node:18-alpine as production
