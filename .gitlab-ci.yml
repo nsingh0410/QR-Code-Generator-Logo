@@ -1,5 +1,6 @@
 stages:
   - build
+  - test
   - deploy
 
 variables:
@@ -13,6 +14,18 @@ build:
     - main
   tags:
     - ff-dj-docker1
+
+test:
+  stage: test
+  script:
+    - npm test -- --coverage
+  only:
+    - main
+  tags:
+    - ff-dj-docker1
+  artifacts:
+    paths:
+      - coverage/
 
 deploy:
   stage: deploy
