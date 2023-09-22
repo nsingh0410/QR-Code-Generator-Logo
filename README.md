@@ -6,7 +6,7 @@ Generate QR Code based on an input and apply a logo which you can resize.
 
 [![Coverage](https://img.shields.io/badge/coverage-88.73%25-brightgreen?logo=coveralls&logoColor=white)](https://github.com/nsingh0410/QR-Code-Generator-Logo/coverage/Icov-report/index.html)
 
-![](assets/20230922_150108_qrcode.png)
+![](assets/20230922_181056_qrcode.png)
 
 ## Installation Instructions
 
@@ -18,9 +18,6 @@ Generate QR Code based on an input and apply a logo which you can resize.
 
 The api documentation is located here:
 You can run and test the api here.
-
-Prod version
-https://internal-digiapi.skyracing.cloud/api-docs
 
 Local version
 http://localhost:3000/api-docs
