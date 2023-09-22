@@ -6,6 +6,8 @@ stages:
 variables:
   IMAGE_NAME: internal_digiapi
 
+
+
 build:
   stage: build
   script:
@@ -14,6 +16,9 @@ build:
     - main
   tags:
     - ff-dj-docker1
+
+before_script:
+  - npm install
 
 test:
   stage: test
