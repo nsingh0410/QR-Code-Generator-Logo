@@ -24,8 +24,11 @@ for (const line of lines) {
 // Calculate the coverage percentage
 const coveragePercentage = (coveredLines / totalLines) * 100;
 
+// URl for the main html coverage report.
+const urlCoverage = 'https://github.com/nsingh0410/QR-Code-Generator-Logo/coverage/Icov-report/index.html';
+
 // Generate the badge Markdown
-const badgeMarkdown = `[![Coverage](https://img.shields.io/badge/coverage-${coveragePercentage.toFixed(2)}%25-brightgreen?logo=coveralls&logoColor=white)](https://gitlab.skyracing.cloud/sky-dev-team/chrysalis/digiapi/-/blob/main/coverage/lcov-report/index.html)`;
+const badgeMarkdown = `[![Coverage](https://img.shields.io/badge/coverage-${coveragePercentage.toFixed(2)}%25-brightgreen?logo=coveralls&logoColor=white)](${urlCoverage})`;
 
 // Read the README.md file
 let readmeContent = fs.readFileSync('README.md', 'utf-8');

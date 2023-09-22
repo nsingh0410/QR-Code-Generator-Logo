@@ -2,7 +2,6 @@ const express = require('express');
 const router = express.Router();
 const QRCode = require('../entity/Qrcode.js');
 const { generateAndSendQRCode } = require('../js/utils');
-const generateQRCode = require('../js/generate-qrcode');
 
 /**
  * @swagger
@@ -23,11 +22,11 @@ const generateQRCode = require('../js/generate-qrcode');
  *                 type: string
  *                 required: true
  *                 description: The text or URL to encode in the QR code.
- *                 default: https://www.skyracing.com.au
+ *                 default: https://www.google.com
  *               logoImagePath:
  *                 type: string
  *                 description: The path to the logo image (optional, if provided will add logo in centre).
- *                 default: images/logos/tab-logo-white.png
+ *                 default: src/images/logos/laugh.png
  *               qrSize:
  *                 type: integer
  *                 description: The size of the QR code (optional, default is 512).
@@ -62,7 +61,7 @@ router.post('/generateqr/generate-file', async (req, res) => {
     qrCodeEntity.validate();
    
     // Call the reusable method to generate and send the QR code
-    await generateAndSendQRCode(qrCodeEntity, res, generateQRCode);
+    await generateAndSendQRCode(qrCodeEntity, res);
   } catch (error) {
     console.error(error.message);
     res.status(400).json({ error: error.message });

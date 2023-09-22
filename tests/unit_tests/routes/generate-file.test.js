@@ -16,8 +16,8 @@ describe('generate-file API', () => {
       chai.request(app)
         .post('/generateqr/generate-file')
         .send({
-            "text" : "https://www.skyracing.com.au",
-            "logoImagePath": "images/logos/tab-logo-white.png",
+            "text" : "https://github.com/nsingh0410/QR-Code-Generator-Logo",
+            "logoImagePath": "src/images/logos/laugh.png",
             "qrSize": 512,
             "logoSize": 150,
             "outputDirectory": imageDir

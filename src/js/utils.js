@@ -3,7 +3,7 @@ const generateQRCode = require('../js/generate-qrcode');
 const generateAndSendQRCode = async (qrCodeEntity, res) => {
   try {
     // Generate the QR code image file using qrCodeEntity
-    const filePath = await generateQRCode(qrCodeEntity);
+    let filePath = await generateQRCode(qrCodeEntity);
 
     // Set response headers for downloading the image
     res.setHeader('Content-Disposition', `attachment; filename="${qrCodeEntity.outputFileName}"`);
@@ -21,5 +21,4 @@ const generateAndSendQRCode = async (qrCodeEntity, res) => {
     res.status(500).json({ error: 'Failed to generate and send QR code.' });
   }
 };
-
 module.exports = { generateAndSendQRCode };

@@ -3,15 +3,11 @@ const app = express();
 const port = 3000;
 const swaggerJsdoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
-const meetinghubRouter = require('./routes/meetinghub');
-const betfriendsRouter = require('./routes/betfriends');
 const generatefileRouter = require('./routes/generate-file');
 
 app.use(express.json());
 
 // Endpoints
-app.use('/', meetinghubRouter);
-app.use('/', betfriendsRouter);
 app.use('/', generatefileRouter);
 
 // Swagger options
@@ -25,19 +21,13 @@ const swaggerOptions = {
     },
     servers: [ 
       {
-        url: 'https://internal-digiapi.skyracing.cloud',
-        description: 'Prod development server',
-      },
-      {
         url: 'http://localhost:3000',
         description: 'Local development server',
       }
     ],
   },
   apis: [
-  'src/routes/betfriends.js', 
-  'src/routes/generate-file.js', 
-  'src/routes/meetinghub.js'
+  'src/routes/generate-file.js'
 ],
 };
 

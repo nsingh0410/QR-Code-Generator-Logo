@@ -1,16 +1,18 @@
-# DigiAPI
-
-[![Coverage](https://img.shields.io/badge/coverage-86.39%25-brightgreen?logo=coveralls&logoColor=white)](https://gitlab.skyracing.cloud/sky-dev-team/chrysalis/digiapi/-/blob/main/coverage/lcov-report/index.html)
-
-![Alt text](images/logos/tab-logo-white.png)
-
 # QR Code Generator
+
+## Description
+
+Generate QR Code based on an input and apply a logo which you can resize.
+
+[![Coverage](https://img.shields.io/badge/coverage-88.73%25-brightgreen?logo=coveralls&logoColor=white)](https://github.com/nsingh0410/QR-Code-Generator-Logo/coverage/Icov-report/index.html)
+
+![](assets/20230922_150108_qrcode.png)
 
 ## Installation Instructions
 
-1. git clone the repo e.g. git clone https://gitlab.skyracing.cloud/sky-dev-team/chrysalis/digiapi.git
+1. git clone the repo e.g. git clone https://github.com/nsingh0410/QR-Code-Generator-Logo
 2. npm install
-3. node app.js to start application
+3. npm run app to start application
 
 ## Documentation
 
@@ -29,4 +31,4 @@ You can switch between each server.
 
 command to run unit tests:
 
-npx mocha app.test.js
+npm run test

@@ -2,7 +2,7 @@ const chai = require('chai');
 const path = require('path');
 
 const { appRootDirectory } = require('../../testConstants');
-const QRCode = require(path.join(appRootDirectory, 'src', 'entity', 'qrcode.js')); // Use the rootDirectory variable
+const QRCode = require(path.join(appRootDirectory, 'src', 'entity', 'Qrcode.js'));
 const expect = chai.expect;
 
 describe('QRCode', () => {
@@ -16,8 +16,6 @@ describe('QRCode', () => {
       const qrCode = new QRCode(undefined, 'images/logo.png');
       expect(() => qrCode.validate()).to.throw('Please enter text e.g. https://www.skyracing.com.au');
     });
-
-    // Add similar tests for other required fields
   });
 
   describe('createQRCode', () => {
