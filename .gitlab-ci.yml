@@ -26,10 +26,3 @@ deploy:
     - main
   tags:
     - ff-dj-docker1
-
-update-readme-badge:
-  stage: build
-  script:
-    - node badges/update-coverage-badge.js
-  only:
-    - main
