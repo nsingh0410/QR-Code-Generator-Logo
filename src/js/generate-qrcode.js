@@ -29,7 +29,7 @@ const generateQRCode = async (qrCodeEntity) => {
     }
 
     // Set the output path
-    const outputPath = path.join(outputDirectory || '', outputFileName);
+    const outputPath = path.join(outputDirectory, outputFileName);
 
     // Write the composite image to the output file
     await qrImage.writeAsync(outputPath);

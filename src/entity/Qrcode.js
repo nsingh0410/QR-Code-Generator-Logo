@@ -1,7 +1,7 @@
 require('dotenv').config();
 
 class QRCode {
-  constructor(text, logoImagePath, qrSize = 512, logoSize = 150, outputFileName = 'qrcode-with-logo.png', outputDirectory = '') {
+  constructor(text, logoImagePath, qrSize = 512, logoSize = 150, outputFileName = 'qrcode-with-logo.png', outputDirectory = __dirname) {
     this.text = text;
     this.logoImagePath = logoImagePath;
     this.qrSize = qrSize;
