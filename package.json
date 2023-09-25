@@ -1,8 +1,11 @@
 {
-  "name": "qr-code-api",
+  "name": "@singhn/qrcode-generator-logo",
   "version": "1.0.0",
   "description": "",
   "main": "src/app.js",
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "test": "nyc mocha tests/**/*.test.js --coverage --exit && node badges/generate-badge-url.js && node tests/cleanup.js",
     "app": "node src/app.js"
